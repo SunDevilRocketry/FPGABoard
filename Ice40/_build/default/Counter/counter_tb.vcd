@@ -1,0 +1,105 @@
+$date
+	Wed Aug 12 16:21:17 2026
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module counter_tb $end
+$var wire 3 ! count [2:0] $end
+$var reg 1 " clk $end
+$var reg 1 # enable $end
+$var reg 1 $ reset $end
+$scope module tester $end
+$var wire 1 " clk $end
+$var wire 1 # enable $end
+$var wire 1 $ reset $end
+$var parameter 3 % ONE $end
+$var parameter 3 & ZERO $end
+$var parameter 32 ' bits $end
+$var reg 3 ( count [2:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b11 '
+b0 &
+b1 %
+$end
+#0
+$dumpvars
+b0 (
+1$
+1#
+0"
+b0 !
+$end
+#5
+b1 !
+b1 (
+0$
+1"
+#10
+0"
+#15
+b10 !
+b10 (
+1"
+#20
+0"
+#25
+b11 !
+b11 (
+1"
+#30
+0"
+#35
+b100 !
+b100 (
+1"
+#40
+0"
+#45
+b101 !
+b101 (
+1"
+#50
+0"
+#55
+b110 !
+b110 (
+1"
+#60
+0"
+#65
+b111 !
+b111 (
+1"
+#70
+0"
+#75
+b0 !
+b0 (
+1"
+#80
+0"
+#85
+b1 !
+b1 (
+1"
+#90
+0"
+#95
+b10 !
+b10 (
+1"
+#100
+0"
+#105
+b11 !
+b11 (
+1"
+#110
