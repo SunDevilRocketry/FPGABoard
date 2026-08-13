@@ -1,4 +1,4 @@
-timestamp: "12162116983"
+timestamp: "13131444898"
 arch: ICE40
 fpga_info {
   fpga_id: "ice40up5k-sg48"
@@ -30,6 +30,7 @@ apio_env_params {
 }
 target {
   sim {
+    testbench_path: "spimaster/spimaster_tb.sv"
     force_sim: false
     no_gtkwave: false
     detach_gtkwave: false

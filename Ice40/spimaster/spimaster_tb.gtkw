@@ -1,0 +1,39 @@
+[*]
+[*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
+[*] Thu Aug 13 18:13:03 2026
+[*]
+[dumpfile] "C:\Users\dmort\OneDrive\Documents\GitHub\FPGABoard\Ice40\_build\default\spimaster\spimaster_tb.vcd"
+[dumpfile_mtime] "Thu Aug 13 18:12:16 2026"
+[dumpfile_size] 3969
+[savefile] "C:\Users\dmort\OneDrive\Documents\GitHub\FPGABoard\Ice40\spimaster\spimaster_tb.gtkw"
+[timestart] 0
+[size] 1920 993
+[pos] -2129 -206
+*-4.844155 91 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 246
+[signals_width] 218
+[sst_expanded] 1
+[sst_vpaned_height] 295
+@22
+spimaster_tb.address[7:0]
+@28
+spimaster_tb.clk
+@22
+spimaster_tb.count[3:0]
+@28
+spimaster_tb.dataready
+@22
+spimaster_tb.dummy[15:0]
+@28
+spimaster_tb.dummytester
+spimaster_tb.enable
+spimaster_tb.MISO
+spimaster_tb.MOSI
+@22
+spimaster_tb.read[7:0]
+@28
+spimaster_tb.reset
+@22
+spimaster_tb.writedata[7:0]
+[pattern_trace] 1
+[pattern_trace] 0

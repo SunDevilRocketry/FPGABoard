@@ -1,0 +1,500 @@
+$date
+	Thu Aug 13 13:14:45 2026
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module spimaster_tb $end
+$var wire 1 ! MISO $end
+$var wire 8 " address [7:0] $end
+$var wire 16 # dummy [15:0] $end
+$var wire 8 $ writedata [7:0] $end
+$var wire 8 % read [7:0] $end
+$var wire 1 & dummytester $end
+$var wire 1 ' dataready $end
+$var wire 4 ( count [3:0] $end
+$var wire 1 ) MOSI $end
+$var reg 1 * clk $end
+$var reg 1 + enable $end
+$var reg 1 , reset $end
+$scope module timerbuf $end
+$var wire 1 - clk $end
+$var wire 1 + enable $end
+$var wire 1 , reset $end
+$var parameter 4 . ONE $end
+$var parameter 4 / ZERO $end
+$var parameter 32 0 bits $end
+$var reg 4 1 count [3:0] $end
+$upscope $end
+$scope module uut $end
+$var wire 1 ! MISO $end
+$var wire 8 2 address [7:0] $end
+$var wire 1 * clk $end
+$var wire 1 ' dataready $end
+$var wire 1 + enable $end
+$var wire 1 , reset $end
+$var wire 8 3 writedata [7:0] $end
+$var wire 8 4 read [7:0] $end
+$var wire 1 5 done $end
+$var wire 8 6 OUT [7:0] $end
+$var wire 1 ) MOSI $end
+$var wire 8 7 IN [7:0] $end
+$var parameter 1 8 ADDR $end
+$var parameter 1 9 RW $end
+$var reg 1 : nextstate $end
+$var reg 1 ; state $end
+$scope module readdata $end
+$var wire 1 ' clk $end
+$var wire 1 < enable $end
+$var wire 1 , reset $end
+$var wire 8 = in [7:0] $end
+$var parameter 32 > bits $end
+$var reg 8 ? out [7:0] $end
+$upscope $end
+$scope module shifter $end
+$var wire 1 ! bitin $end
+$var wire 8 @ bufout [7:0] $end
+$var wire 1 * clk $end
+$var wire 1 + enable $end
+$var wire 1 , reset $end
+$var wire 3 A negcount [2:0] $end
+$var wire 1 5 done $end
+$var wire 3 B count [2:0] $end
+$var reg 1 ) bitout $end
+$var reg 8 C bufin [7:0] $end
+$scope module negtimer $end
+$var wire 1 D clk $end
+$var wire 1 + enable $end
+$var wire 1 , reset $end
+$var parameter 3 E ONE $end
+$var parameter 3 F ZERO $end
+$var parameter 32 G bits $end
+$var reg 3 H count [2:0] $end
+$upscope $end
+$scope module timer $end
+$var wire 1 * clk $end
+$var wire 1 + enable $end
+$var wire 1 , reset $end
+$var parameter 3 I ONE $end
+$var parameter 3 J ZERO $end
+$var parameter 32 K bits $end
+$var reg 3 L count [2:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b11 K
+b0 J
+b1 I
+b11 G
+b0 F
+b1 E
+b1000 >
+19
+08
+b100 0
+b0 /
+b1 .
+$end
+#0
+$dumpvars
+b0 L
+b0 H
+1D
+b0 C
+b0 B
+b0 A
+b10111010 @
+b0 ?
+b0 =
+1<
+0;
+0:
+b0 7
+b10111010 6
+05
+b0 4
+b10010111 3
+b10111010 2
+b0 1
+1-
+1,
+1+
+0*
+0)
+b0 (
+0'
+0&
+b0 %
+b10010111 $
+b10110110 #
+b10111010 "
+0!
+$end
+#5
+0D
+0-
+1*
+#10
+b1 A
+b1 H
+b1 (
+b1 1
+1)
+1D
+1-
+0,
+0*
+#15
+b1 B
+b1 L
+0D
+0-
+1*
+#20
+b10 A
+b10 H
+b10 (
+b10 1
+0)
+1D
+1-
+0*
+#25
+b10 B
+b10 L
+0D
+0-
+1*
+#30
+b11 A
+b11 H
+b11 (
+b11 1
+1)
+1D
+1-
+0*
+#35
+b11 B
+b11 L
+0D
+0-
+1*
+#40
+b100 A
+b100 H
+b100 (
+b100 1
+1D
+1-
+0*
+#45
+b100 B
+b100 L
+0D
+0-
+1*
+#50
+b101 A
+b101 H
+b101 (
+b101 1
+1D
+1-
+0*
+#55
+b101 B
+b101 L
+0D
+0-
+1*
+#60
+b110 A
+b110 H
+b110 (
+b110 1
+0)
+1D
+1-
+0*
+#65
+b110 B
+b110 L
+0D
+0-
+1*
+#70
+b111 A
+b111 H
+b111 (
+b111 1
+1)
+1D
+1-
+0*
+#75
+1:
+15
+b111 B
+b111 L
+0D
+0-
+1*
+#80
+1!
+1&
+b0 A
+b0 H
+b1000 (
+b1000 1
+0)
+1D
+1-
+0*
+#85
+b10010111 6
+b10010111 @
+1:
+1;
+b10000000 7
+b10000000 =
+b10000000 C
+05
+b0 B
+b0 L
+0D
+0-
+1*
+#90
+0!
+0&
+b1 A
+b1 H
+b1001 (
+b1001 1
+1)
+1D
+1-
+0*
+#95
+b1 B
+b1 L
+0D
+0-
+1*
+#100
+1!
+1&
+b10 A
+b10 H
+b1010 (
+b1010 1
+0)
+1D
+1-
+0*
+#105
+b10100000 7
+b10100000 =
+b10100000 C
+b10 B
+b10 L
+0D
+0-
+1*
+#110
+b11 A
+b11 H
+b1011 (
+b1011 1
+1D
+1-
+0*
+#115
+b11 B
+b11 L
+b10110000 7
+b10110000 =
+b10110000 C
+0D
+0-
+1*
+#120
+0!
+0&
+b100 A
+b100 H
+b1100 (
+b1100 1
+1)
+1D
+1-
+0*
+#125
+b100 B
+b100 L
+0D
+0-
+1*
+#130
+1!
+1&
+b101 A
+b101 H
+b1101 (
+b1101 1
+0)
+1D
+1-
+0*
+#135
+b101 B
+b101 L
+b10110100 7
+b10110100 =
+b10110100 C
+0D
+0-
+1*
+#140
+b110 A
+b110 H
+b1110 (
+b1110 1
+1)
+1D
+1-
+0*
+#145
+b10110110 7
+b10110110 =
+b10110110 C
+b110 B
+b110 L
+0D
+0-
+1*
+#150
+0!
+0&
+b111 A
+b111 H
+b1111 (
+b1111 1
+1D
+1-
+0*
+#155
+b10110110 %
+b10110110 4
+b10110110 ?
+0:
+1'
+15
+b111 B
+b111 L
+0D
+0-
+1*
+#160
+b0 A
+b0 H
+b0 (
+b0 1
+1D
+1-
+0*
+#165
+b10111010 6
+b10111010 @
+0'
+0;
+b110110 7
+b110110 =
+b110110 C
+05
+b0 B
+b0 L
+0D
+0-
+1*
+#170
+b1 A
+b1 H
+b1 (
+b1 1
+1D
+1-
+0*
+#175
+b1 B
+b1 L
+0D
+0-
+1*
+#180
+b10 A
+b10 H
+b10 (
+b10 1
+0)
+1D
+1-
+0*
+#185
+b10110 7
+b10110 =
+b10110 C
+b10 B
+b10 L
+0D
+0-
+1*
+#190
+b11 A
+b11 H
+b11 (
+b11 1
+1)
+1D
+1-
+0*
+#195
+b11 B
+b11 L
+b110 7
+b110 =
+b110 C
+0D
+0-
+1*
+#200
+b100 A
+b100 H
+b100 (
+b100 1
+1D
+1-
+0*
+#205
+b100 B
+b100 L
+0D
+0-
+1*
+#210
+b101 A
+b101 H
+b101 (
+b101 1
+1D
+1-
+0*
+#215
