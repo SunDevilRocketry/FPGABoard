@@ -5,8 +5,8 @@ module dreg #(parameter bits = 4) (
 );
     always_ff @ (posedge clk or posedge reset) begin
         if (reset)
-            out = '0;
+            out <= '0;
         else if (enable)
-            out = in;
+            out <= in;
     end
 endmodule

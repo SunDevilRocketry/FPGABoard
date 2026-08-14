@@ -22,7 +22,7 @@ module spimaster (
     //the classic
     shiftreg shifter (.clk(clk), .reset(reset), .enable(enable), .bitin(MISO), .bufout(OUT), .done(done), .bitout(MOSI), .bufin(IN));
     //when data is ready, save the output by trapping it in a dreg
-    dreg #(8) readdata (.clk(dataready), .enable(1'b1), .reset(reset), .in(IN), .out(read));
+    dreg #(8) readdata (.clk(clk), .enable(dataready), .reset(reset), .in(IN), .out(read));
 
     //state machine, when done with one, start doing the other. Goes forever bar enable and reset
     always_comb begin
