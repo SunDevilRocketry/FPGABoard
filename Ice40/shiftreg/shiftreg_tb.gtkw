@@ -7,6 +7,7 @@
 [*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
 
 [*]
+shiftreg_tb.benable
 shiftreg_tb.bitout
 shiftreg_tb.bufin[7:0]
 shiftreg_tb.bufout[7:0]

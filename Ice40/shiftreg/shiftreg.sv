@@ -5,9 +5,12 @@ module shiftreg(
 );
 
     logic [2:0] count;
-    //the positive timer is used to update bitout count on the pos clock edge, so its ready to be adjusted when neg clock edge
-    //the negative timer is used for the counter for bitin, so the count is ready when clockedge goes high to sample. 
-    counter #(3) timer (.clk(clk), .reset(reset), .enable(enable), .count(count));
+    logic [7:0] sampleout;
+    logic benable;
+    //the dreg is to ensure after the reset, the first clock cycle does not start at 0, but rather 1
+    //Look at count wire with *apio sim  shiftreg/shiftreg_tb.sv* for more info
+    counter #(3) timer (.clk(clk), .reset(reset), .enable(benable), .count(count));
+    dreg #(1) buffer (.clk(clk), .reset(reset), .enable(enable), .in(enable), .out(benable));
     assign done = count == 3'd7;
     
     //on the rising clock edge, we sample the input
@@ -16,17 +19,18 @@ module shiftreg(
             bufin <= '0;
         end
         else if (enable) begin
-            bufin[3'd7-count] <= bitin;
+            bufin <= {bufin[6:0], bitin};
         end
     end
 
     //on the falling clock edge, we set our outputs to be sampled
-    always_ff @ (posedge reset or negedge clk) begin
-        if (reset) begin
-            bitout <= bufout[3'd7-count];
+    always_ff @ (posedge reset or negedge clk or negedge done) begin
+        if (reset | done) begin
+            sampleout = bufout;
         end
         else if (enable) begin
-            bitout <= bufout[3'd7-count];
+            sampleout <= {sampleout[6:0], '0};
+            bitout <= sampleout[7];
         end
     end
 endmodule

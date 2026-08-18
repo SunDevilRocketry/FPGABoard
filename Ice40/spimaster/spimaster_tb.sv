@@ -3,14 +3,16 @@ module spimaster_tb();
     logic clk, reset, enable, MISO;
     logic [7:0] address, writedata;
 
-    logic dataready, MOSI, dummytester;
+    logic dataready, MOSI, dummytester, benable;
     logic [7:0] read;
     logic[15:0] dummy;
 
     logic [3:0] count;
 
     spimaster uut (clk, enable, reset, MISO, address, writedata, read, dataready, MOSI);
-    counter #(4) timerbuf (.clk(~clk), .enable(enable), .reset(reset), .count(count));
+    counter #(4) timerbuf (.clk(~clk), .enable(benable), .reset(reset), .count(count));
+    dreg #(1) buffer (.clk(clk), .reset(reset), .enable(enable), .in(enable), .out(benable));
+
 
     assign dummy = 16'b0000000010110110;
     assign dummytester = dummy['d15-count];

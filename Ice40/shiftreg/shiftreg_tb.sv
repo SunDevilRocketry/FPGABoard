@@ -3,17 +3,19 @@ module shiftreg_tb();
     logic clk, reset, enable, bitin;
     logic [7:0] bufout;
 
-    logic done, bitout, dummytester;
+    logic done, bitout, dummytester, benable;
     logic [7:0] bufin;
     logic[15:0] dummy;
 
     logic [3:0] count;
 
-    shiftreg tester (.clk(clk), .enable(enable), .reset(reset), .bitin(dummy[count]), .bufout(bufout), .done(done), .bitout(bitout), .bufin(bufin));
-    counter #(4) timerbuf (.clk(~clk), .enable(enable), .reset(reset), .count(count));
+    shiftreg tester (.clk(clk), .enable(enable), .reset(reset), .bitin(dummy['d15-count]), .bufout(bufout), .done(done), .bitout(bitout), .bufin(bufin));
+    counter #(4) timerbuf (.clk(~clk), .enable(benable), .reset(reset), .count(count));
+    dreg #(1) buffer (.clk(clk), .reset(reset), .enable(enable), .in(enable), .out(benable));
 
-    assign dummy = 16'b0000000010101010;
-    assign dummytester = dummy[count];
+
+    assign dummy = 16'b0000000010110110;
+    assign dummytester = dummy['d15-count];
 
     initial begin
         $dumpvars(0, shiftreg_tb);

@@ -3,6 +3,7 @@ module dreg #(parameter bits = 4) (
 
     output logic [bits-1:0] out
 );
+    //on the rising clock edge, output whatevers at the input, and hold
     always_ff @ (posedge clk or posedge reset) begin
         if (reset)
             out <= '0;
