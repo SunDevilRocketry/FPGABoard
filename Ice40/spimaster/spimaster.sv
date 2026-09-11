@@ -21,7 +21,7 @@ module spimaster (
     //for now SCLK output is just the normal clock, Ill fix this when the hardware stops working
     assign SCLK = clk;
 
-    //data is ready when done is high and state is 1, so RW
+    //data is ready when done is high and state is RW
     //basically when done in the RW state SOMETHING is finished
     //readwrite agnostic code may or may not kill me later on 
     assign dataready = done & (state == RW);
@@ -29,7 +29,7 @@ module spimaster (
     //the classic
     shiftreg shifter (.clk(clk), .reset(reset), .enable(enable), .bitin(MISO), .bufout(OUT), .done(done), .bitout(MOSI), .bufin(IN));
     //when data is ready, save the output by trapping it in a dreg
-    dreg #(8) readdata (.clk(clk), .enable(dataready), .reset(reset), .in(IN), .out(read));
+    dreg #(8) readdata (.clk(dataready), .enable(1'b1), .reset(reset), .in(IN), .out(read));
 
     //state machine, when done with one, start doing the other. Goes forever bar enable and reset
     always_comb begin
@@ -56,7 +56,7 @@ module spimaster (
     end
 
     //on clock cycle, change state
-    always_ff @ (posedge clk or posedge reset) begin
+    always_ff @ (negedge clk or posedge reset) begin
         if (reset) begin
             state <= ADDR;
         end

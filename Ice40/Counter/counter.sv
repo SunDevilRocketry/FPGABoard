@@ -1,3 +1,4 @@
+//module counter with inputs clk, reset, enable, and output count
 module counter #(
     parameter bits=4
 ) (
@@ -10,12 +11,12 @@ module counter #(
     localparam [bits-1:0] ZERO = 'b0;
     localparam [bits-1:0] ONE = 'b1;
 
-    //on the rising clock edge, increment by one
-    //otherwise reset
-    //this depends on overflowing to create a constant 0-7 loop
+    //when clk or reset goes HIGH,
     always_ff @ (posedge clk or posedge reset) begin
+        //if reset is high, output ZERO
         if (reset)
             count <= ZERO;
+        //otherwise, if enable is high, output the old COUNT plus one
         else if (enable)
             count <= count + ONE;
     end

@@ -24,9 +24,9 @@ module shiftreg(
     end
 
     //on the falling clock edge, we set our outputs to be sampled
-    always_ff @ (posedge reset or negedge clk or negedge done) begin
-        if (reset | done) begin
-            sampleout = bufout;
+    always_ff @ (posedge reset or negedge clk) begin
+        if (reset | done || (sampleout == '0)) begin
+            sampleout <= bufout;
         end
         else if (enable) begin
             sampleout <= {sampleout[6:0], '0};
