@@ -22,7 +22,12 @@ module shiftreg_tb();
         clk = 1'b0; reset = 1'b1; enable = 1'b1; bufout = 8'b10010001; #5;
         clk = 1'b1; reset = 1'b1; enable = 1'b1; #5;
         clk = 1'b0; reset = 1'b0; #5;
-        repeat(40) begin
+        repeat(14) begin
+            clk = ~clk; #5;
+        end
+        bufout = 8'b01101110; clk = ~clk; #5;
+        clk = ~clk; #5;
+        repeat(16) begin
             clk = ~clk; #5;
         end
     end
