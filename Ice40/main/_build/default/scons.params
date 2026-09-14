@@ -1,4 +1,4 @@
-timestamp: "12135233335"
+timestamp: "12235714351"
 arch: ICE40
 fpga_info {
   fpga_id: "ice40up5k-sg48"
@@ -8,6 +8,9 @@ fpga_info {
     type: "up5k"
     package: "sg48"
   }
+}
+verbosity {
+  pnr: false
 }
 environment {
   platform_id: "windows-amd64"
@@ -26,13 +29,5 @@ environment {
 apio_env_params {
   env_name: "default"
   board_id: "upduino31"
-  top_module: "main"
-}
-target {
-  sim {
-    testbench_path: "shiftreg/shiftreg_tb.sv"
-    force_sim: false
-    no_gtkwave: false
-    detach_gtkwave: false
-  }
+  top_module: "top"
 }
