@@ -20,7 +20,7 @@ module shiftreg_tb();
 
     initial begin
         $dumpvars(0, shiftreg_tb);
-        clk = 1'b0; reset = 1'b1; enable = 1'b1; ready = 1'b0; bufout = 16'b1001000101101110; #5;
+        clk = 1'b0; reset = 1'b1; enable = 1'b1; bufout = 16'b1001000101101110; #5;
         clk = 1'b1; reset = 1'b1; enable = 1'b1; #5;
         clk = 1'b0; reset = 1'b0; #5;
         repeat(40) begin
