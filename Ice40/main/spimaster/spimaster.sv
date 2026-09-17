@@ -1,3 +1,5 @@
+//spimaster is kinda misleading, this is more of a spi reader that someone tried to have write too
+
 module spimaster #(parameter clkscale = 4) (
     input logic  clk, enable, reset, MISO, input logic [7:0] address, writedata,
 
