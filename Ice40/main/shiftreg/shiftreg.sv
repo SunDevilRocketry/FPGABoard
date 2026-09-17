@@ -1,31 +1,30 @@
 module shiftreg(
     input logic clk, reset, enable, bitin, input logic [15:0] bufout,
 
-    output logic done, bitout, output logic [7:0] bufin, output logic [3:0] pcounter
+    output logic done, bitout, output logic [7:0] bufin, output logic [3:0] pcounter, output logic cdone
 );
-
-    logic [7:0] sampleout;
-    logic benable;
     //the dreg is to ensure after the reset, the first clock cycle does not start at 0, but rather 1
     //Look at count wire with *apio sim  shiftreg/shiftreg_tb.sv* for more info
-    counter_neg #(4) timer (.clk(clk), .reset(reset), .enable(benable), .count(pcounter));
-    dreg_neg #(1) buffer (.clk(clk), .reset(reset), .enable(enable), .in(enable), .out(benable));
+    counter_nrst_neg #(4) timer (.clk(clk), .reset(reset), .enable(enable), .count(pcounter), .done(cdone));
     
     //if reset or clk goes high,
     always_ff @ (posedge reset or posedge clk) begin
-        //if reset is high, we make inbuf 0
+        //if reset is high, we make bufin and done 0
         if (reset) begin
             bufin <= '0;
             done <= '0;
         end
-        //otherwise, we take the first 7 bits of bufin and add bitin
+        //otherwise, if enabled and the program counter is above 7 (not in address)
         else if (enable & (pcounter >= 7)) begin
+            //shift in a bit, and 
             bufin <= {bufin[6:0], bitin};
+
+            //if pcounter is 15, set done high
             if (pcounter==4'd15) done <= 1;
         end
     end
 
-    //when reset goes high or clk goes LOW,
+    //bitout equals whatever bit is dictated by the counter, counting back from 15
     assign bitout = bufout[4'd15-pcounter];
 
 endmodule

@@ -1,5 +1,5 @@
 $date
-	Wed Sep 16 23:26:38 2026
+	Thu Sep 17 13:43:48 2026
 $end
 $version
 	Icarus Verilog
@@ -9,93 +9,86 @@ $timescale
 $end
 $scope module shiftreg_tb $end
 $var wire 16 ! dummy [15:0] $end
-$var wire 3 " pcounter [2:0] $end
+$var wire 4 " pcounter [3:0] $end
 $var wire 1 # dummytester $end
 $var wire 1 $ done $end
 $var wire 4 % count [3:0] $end
-$var wire 8 & bufin [7:0] $end
-$var wire 1 ' bitout $end
-$var wire 1 ( benable $end
-$var reg 16 ) bufout [15:0] $end
-$var reg 1 * clk $end
-$var reg 1 + enable $end
-$var reg 1 , reset $end
+$var wire 1 & cdone $end
+$var wire 8 ' bufin [7:0] $end
+$var wire 1 ( bitout $end
+$var wire 1 ) benable $end
+$var reg 16 * bufout [15:0] $end
+$var reg 1 + clk $end
+$var reg 1 , enable $end
+$var reg 1 - reset $end
 $scope module buffer $end
-$var wire 1 * clk $end
-$var wire 1 + enable $end
-$var wire 1 + in $end
-$var wire 1 , reset $end
-$var parameter 32 - bits $end
-$var reg 1 ( out $end
+$var wire 1 + clk $end
+$var wire 1 , enable $end
+$var wire 1 , in $end
+$var wire 1 - reset $end
+$var parameter 32 . bits $end
+$var reg 1 ) out $end
 $upscope $end
 $scope module tester $end
-$var wire 1 . bitin $end
-$var wire 16 / bufout [15:0] $end
-$var wire 1 * clk $end
-$var wire 1 + enable $end
-$var wire 1 , reset $end
-$var wire 4 0 pcounter [3:0] $end
-$var wire 1 ' bitout $end
-$var wire 1 1 benable $end
+$var wire 1 / bitin $end
+$var wire 16 0 bufout [15:0] $end
+$var wire 1 + clk $end
+$var wire 1 , enable $end
+$var wire 1 - reset $end
+$var wire 4 1 pcounter [3:0] $end
+$var wire 1 & cdone $end
+$var wire 1 ( bitout $end
 $var reg 8 2 bufin [7:0] $end
 $var reg 1 $ done $end
-$scope module buffer $end
-$var wire 1 * clk $end
-$var wire 1 + enable $end
-$var wire 1 + in $end
-$var wire 1 , reset $end
-$var parameter 32 3 bits $end
-$var reg 1 1 out $end
-$upscope $end
 $scope module timer $end
-$var wire 1 * clk $end
-$var wire 1 1 enable $end
-$var wire 1 , reset $end
-$var parameter 4 4 ONE $end
-$var parameter 4 5 ZERO $end
-$var parameter 32 6 bits $end
-$var reg 4 7 count [3:0] $end
+$var wire 1 + clk $end
+$var wire 1 , enable $end
+$var wire 1 - reset $end
+$var parameter 4 3 ONE $end
+$var parameter 4 4 ZERO $end
+$var parameter 32 5 bits $end
+$var reg 4 6 count [3:0] $end
+$var reg 1 & done $end
 $upscope $end
 $upscope $end
 $scope module timerbuf $end
-$var wire 1 8 clk $end
-$var wire 1 ( enable $end
-$var wire 1 , reset $end
-$var parameter 4 9 ONE $end
-$var parameter 4 : ZERO $end
-$var parameter 32 ; bits $end
-$var reg 4 < count [3:0] $end
+$var wire 1 7 clk $end
+$var wire 1 ) enable $end
+$var wire 1 - reset $end
+$var parameter 4 8 ONE $end
+$var parameter 4 9 ZERO $end
+$var parameter 32 : bits $end
+$var reg 4 ; count [3:0] $end
 $upscope $end
 $upscope $end
 $enddefinitions $end
 $comment Show the parameter values. $end
 $dumpall
-b100 ;
-b0 :
-b1 9
-b100 6
-b0 5
-b1 4
+b100 :
+b0 9
+b1 8
+b100 5
+b0 4
 b1 3
-b1 -
+b1 .
 $end
 #0
 $dumpvars
-b0 <
-18
-b0 7
+b0 ;
+17
+b0 6
 b0 2
-01
-b0 0
-b1001000101101110 /
-0.
+b0 1
+b1001000101101110 0
+0/
+1-
 1,
-1+
-0*
-b1001000101101110 )
-0(
-1'
-b0 &
+0+
+b1001000101101110 *
+0)
+1(
+b0 '
+0&
 b0 %
 0$
 0#
@@ -103,274 +96,263 @@ b0 "
 b10110110 !
 $end
 #5
-08
-1*
+07
+1+
 #10
-11
-18
-0,
-0*
-#15
-1(
-08
-1*
-#20
+0(
 b1 "
+b1 1
+b1 6
+17
+0-
+0+
+#15
+1)
+07
+1+
+#20
 b1 %
-b1 <
-0'
-b1 0
-b1 7
-18
-0*
-#25
-08
-1*
-#30
+b1 ;
 b10 "
+b10 1
+b10 6
+17
+0+
+#25
+07
+1+
+#30
 b10 %
-b10 <
-b10 0
-b10 7
-18
-0*
-#35
-08
-1*
-#40
+b10 ;
+1(
 b11 "
+b11 1
+b11 6
+17
+0+
+#35
+07
+1+
+#40
 b11 %
-b11 <
-1'
-b11 0
-b11 7
-18
-0*
-#45
-08
-1*
-#50
+b11 ;
+0(
 b100 "
+b100 1
+b100 6
+17
+0+
+#45
+07
+1+
+#50
 b100 %
-b100 <
-0'
-b100 0
-b100 7
-18
-0*
-#55
-08
-1*
-#60
+b100 ;
 b101 "
+b101 1
+b101 6
+17
+0+
+#55
+07
+1+
+#60
 b101 %
-b101 <
-b101 0
-b101 7
-18
-0*
-#65
-08
-1*
-#70
+b101 ;
 b110 "
+b110 1
+b110 6
+17
+0+
+#65
+07
+1+
+#70
 b110 %
-b110 <
-b110 0
-b110 7
-18
-0*
-#75
-08
-1*
-#80
+b110 ;
+1(
 b111 "
+b111 1
+b111 6
+17
+0+
+#75
+07
+1+
+#80
 b111 %
-b111 <
-1'
-b111 0
-b111 7
-18
-0*
+b111 ;
+0(
+b1000 "
+b1000 1
+b1000 6
+17
+0+
 #85
-08
-1*
+07
+1+
 #90
 1#
-1.
-b0 "
+1/
 b1000 %
-b1000 <
-0'
-b1000 0
-b1000 7
-18
-0*
+b1000 ;
+1(
+b1001 "
+b1001 1
+b1001 6
+17
+0+
 #95
-b1 &
+b1 '
 b1 2
-08
-1*
+07
+1+
 #100
 0#
-0.
-b1 "
+0/
 b1001 %
-b1001 <
-1'
-b1001 0
-b1001 7
-18
-0*
+b1001 ;
+b1010 "
+b1010 1
+b1010 6
+17
+0+
 #105
-b10 &
+b10 '
 b10 2
-08
-1*
+07
+1+
 #110
 1#
-1.
-b10 "
+1/
 b1010 %
-b1010 <
-b1010 0
-b1010 7
-18
-0*
+b1010 ;
+0(
+b1011 "
+b1011 1
+b1011 6
+17
+0+
 #115
-b101 &
+b101 '
 b101 2
-08
-1*
+07
+1+
 #120
-b11 "
 b1011 %
-b1011 <
-0'
-b1011 0
-b1011 7
-18
-0*
+b1011 ;
+1(
+b1100 "
+b1100 1
+b1100 6
+17
+0+
 #125
-b1011 &
+b1011 '
 b1011 2
-08
-1*
+07
+1+
 #130
 0#
-0.
-b100 "
+0/
 b1100 %
-b1100 <
-1'
-b1100 0
-b1100 7
-18
-0*
+b1100 ;
+b1101 "
+b1101 1
+b1101 6
+17
+0+
 #135
-b10110 &
+b10110 '
 b10110 2
-08
-1*
+07
+1+
 #140
 1#
-1.
-b101 "
+1/
 b1101 %
-b1101 <
-b1101 0
-b1101 7
-18
-0*
+b1101 ;
+b1110 "
+b1110 1
+b1110 6
+17
+0+
 #145
-b101101 &
+b101101 '
 b101101 2
-08
-1*
+07
+1+
 #150
-b110 "
 b1110 %
-b1110 <
-b1110 0
-b1110 7
-18
-0*
+b1110 ;
+0(
+b1111 "
+b1111 1
+b1111 6
+17
+0+
 #155
-b1011011 &
+1$
+b1011011 '
 b1011011 2
-08
-1*
+07
+1+
 #160
 0#
-0.
-b111 "
+0/
 b1111 %
-b1111 <
-0'
-b1111 0
-b1111 7
-18
-0*
+b1111 ;
+1&
+17
+0+
 #165
-1$
-b10110110 &
+b10110110 '
 b10110110 2
-08
-1*
+07
+1+
 #170
-b0 "
 b0 %
-b0 <
-1'
-b0 0
-b0 7
-18
-0*
+b0 ;
+17
+0+
 #175
-08
-1*
+b1101100 '
+b1101100 2
+07
+1+
 #180
-b1 "
 b1 %
-b1 <
-0'
-b1 0
-b1 7
-18
-0*
+b1 ;
+17
+0+
 #185
-08
-1*
+b11011000 '
+b11011000 2
+07
+1+
 #190
-b10 "
 b10 %
-b10 <
-b10 0
-b10 7
-18
-0*
+b10 ;
+17
+0+
 #195
-08
-1*
+b10110000 '
+b10110000 2
+07
+1+
 #200
-b11 "
 b11 %
-b11 <
-1'
-b11 0
-b11 7
-18
-0*
+b11 ;
+17
+0+
 #205
-08
-1*
+b1100000 '
+b1100000 2
+07
+1+
 #210
-b100 "
 b100 %
-b100 <
-0'
-b100 0
-b100 7
-18
-0*
+b100 ;
+17
+0+
 #215

@@ -1,0 +1,14 @@
+[*] GTKWave display configuration for 'apio sim counter_nrst/counter_nrst_tb.sv'
+[*] THIS FILE WAS GENERATED AUTOMATICALLY BY APIO.
+[*] DO NOT EDIT IT MANUALLY!
+[*] To customize this file, run 'apio sim counter_nrst/counter_nrst_tb.sv'
+[*] and save the file from GTKWave.
+
+[*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
+
+[*]
+counter_nrst_tb.clk
+counter_nrst_tb.count[2:0]
+counter_nrst_tb.done
+counter_nrst_tb.enable
+counter_nrst_tb.reset

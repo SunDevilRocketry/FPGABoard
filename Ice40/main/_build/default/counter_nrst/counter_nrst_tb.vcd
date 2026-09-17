@@ -1,0 +1,141 @@
+$date
+	Thu Sep 17 13:33:07 2026
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module counter_nrst_tb $end
+$var wire 1 ! done $end
+$var wire 3 " count [2:0] $end
+$var reg 1 # clk $end
+$var reg 1 $ enable $end
+$var reg 1 % reset $end
+$scope module tester $end
+$var wire 1 # clk $end
+$var wire 1 $ enable $end
+$var wire 1 % reset $end
+$var parameter 3 & ONE $end
+$var parameter 3 ' ZERO $end
+$var parameter 32 ( bits $end
+$var reg 3 ) count [2:0] $end
+$var reg 1 ! done $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b11 (
+b0 '
+b1 &
+$end
+#0
+$dumpvars
+b0 )
+1%
+1$
+0#
+b0 "
+0!
+$end
+#5
+b1 "
+b1 )
+0%
+1#
+#10
+0#
+#15
+b10 "
+b10 )
+1#
+#20
+0#
+#25
+b11 "
+b11 )
+1#
+#30
+0#
+#35
+b100 "
+b100 )
+1#
+#40
+0#
+#45
+b101 "
+b101 )
+1#
+#50
+0#
+#55
+b110 "
+b110 )
+1#
+#60
+0#
+#65
+b111 "
+b111 )
+1#
+#70
+0#
+#75
+1!
+1#
+#80
+0#
+#85
+1#
+#90
+0#
+#95
+1#
+#100
+0#
+#105
+1#
+#110
+0#
+#115
+1#
+#120
+0#
+#125
+1#
+#130
+0#
+#135
+1#
+#140
+0#
+#145
+1#
+#150
+0#
+#155
+1#
+#160
+0#
+#165
+1#
+#170
+0#
+#175
+1#
+#180
+0#
+#185
+1#
+#190
+0#
+#195
+1#
+#200
+0#
+#205
+1#
+#210

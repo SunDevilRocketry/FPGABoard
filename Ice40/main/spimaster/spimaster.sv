@@ -7,7 +7,7 @@ module spimaster #(parameter clkscale = 4) (
 );
 
     //shorthands for address state and readwrite state
-    localparam RW = 1'b0, IDLE = 1'b1;
+    localparam IDLE = 1'b0, RW = 1'b1;
 
     //out, switches between writing address and data
     logic [7:0] IN;
@@ -15,41 +15,45 @@ module spimaster #(parameter clkscale = 4) (
 
     //state machine stuff
     logic state, nextstate;
-    logic done;
-    logic [3:0] pcounter;
+    logic done, cdone, ccdone;
+    logic [3:0] pcounter, pncounter;
 
-    //lower NCS when were not in idle
-    //Due to timing requirements, a delay on actual operation may need to take place to ensure NCS setup time
-    //currently, 
+    //While idle, set NCS high
     assign NCS = (state == IDLE)?(1'b1):(1'b0);
 
     //using the clk scale parameter, generate a signal that scales down the sclk by that amount
-    //$clog2 returns log2(x), so in the default case where clkscale = 4, returns 2
+    //$clog2 returns ceil log2(x), so in the default case where clkscale = 4, returns 2
     logic [$clog2(clkscale)-1:0] SCLKCount;
-    counter #($clog2(clkscale)) SCLKOut (.clk(clk), .reset(reset), .enable(enable), .count(SCLKCount));
-    assign SCLK = (SCLKCount == '1);
+    counter #($clog2(clkscale)) SCLKOut (.clk(clk), .reset(reset | (SCLKCount == clkscale)), .enable(enable), .count(SCLKCount));
 
-    //data is ready when done is high and state is RW
-    //basically when done in the RW state SOMETHING is finished
-    //readwrite agnostic code may or may not kill me later on 
+    //when the count hits the scalar, flip SCLK
+    always_ff @ (posedge clk or posedge reset) begin
+        if (reset | NCS) SCLK <= '0;
+        else if (SCLKCount == (clkscale-1)) SCLK <= ~SCLK;
+    end
+
+    //data is ready when done is high
     assign dataready = done;
 
     //the classic
-    shiftreg shifter (.clk(clk), .reset(reset), .enable(enable), .bitin(MISO), .bufout(OUT), .done(done), .bitout(MOSI), .bufin(IN), .pcounter(pcounter));
+    shiftreg shifter (.clk(SCLK), .reset(reset | state==IDLE), .enable(enable & (state == RW)), .bitin(MISO), .bufout(OUT), .done(done), .bitout(MOSI), .bufin(IN), .pcounter(pcounter), .cdone(cdone));
     //when data is ready, save the output by trapping it in a dreg
     dreg #(8) readdata (.clk(dataready), .enable(1'b1), .reset(reset), .in(IN), .out(read));
-
     //state machine, when done with one, start doing the other. Goes forever bar enable and reset
     always_comb begin
         //always reset to a known value in comb code
-        nextstate = RW;
+        nextstate = IDLE;
         OUT = '0;
         //state switch method
         //a case is just a switch, you cs know this one
         //change to unique case later? linter hates it for some reason
         case (state)
-            RW: nextstate = (dataready)?IDLE:RW;
             IDLE: nextstate = (ready)?RW:IDLE;
+            //this isn't good behavior. A proper cycle of the SCLK has 6 normal clock cycles.
+            //this takes 5 for the cycle, slightly cutting off the end. This will probably be safe due to scaling inaccuracies, 
+            //but is definately something to change in the future.
+            //for calc, the low period is (n-1) clk cycles
+            RW: nextstate = (cdone&(SCLKCount==clkscale-1))?IDLE:RW;
             default: nextstate = IDLE;
         endcase
 
@@ -62,10 +66,10 @@ module spimaster #(parameter clkscale = 4) (
     end
 
     //on clock cycle, change state
-    //why is this negedge? am I tweaking?
+    //after research, nededge works better! Prob cuz pcounter is a negedge clk anyway
     always_ff @ (negedge clk or posedge reset) begin
         if (reset) begin
-            state <= RW;
+            state <= IDLE;
         end
         else if (enable) begin
             state <= nextstate;

@@ -1,5 +1,5 @@
 $date
-	Wed Sep 16 23:41:01 2026
+	Thu Sep 17 14:12:14 2026
 $end
 $version
 	Icarus Verilog
@@ -9,33 +9,33 @@ $timescale
 $end
 $scope module spimaster_tb $end
 $var wire 1 ! MISO $end
-$var wire 8 " address [7:0] $end
-$var wire 16 # dummy [15:0] $end
-$var wire 8 $ writedata [7:0] $end
-$var wire 8 % read [7:0] $end
-$var wire 1 & dummytester $end
-$var wire 1 ' dataready $end
-$var wire 4 ( count [3:0] $end
-$var wire 1 ) benable $end
-$var wire 1 * SCLK $end
-$var wire 1 + NCS $end
-$var wire 1 , MOSI $end
-$var reg 1 - clk $end
-$var reg 1 . enable $end
-$var reg 1 / ready $end
-$var reg 1 0 reset $end
+$var wire 16 " dummy [15:0] $end
+$var wire 8 # read [7:0] $end
+$var wire 1 $ dummytester $end
+$var wire 1 % dataready $end
+$var wire 4 & count [3:0] $end
+$var wire 1 ' benable $end
+$var wire 1 ( SCLK $end
+$var wire 1 ) NCS $end
+$var wire 1 * MOSI $end
+$var reg 8 + address [7:0] $end
+$var reg 1 , clk $end
+$var reg 1 - enable $end
+$var reg 1 . ready $end
+$var reg 1 / reset $end
+$var reg 8 0 writedata [7:0] $end
 $scope module buffer $end
-$var wire 1 - clk $end
-$var wire 1 . enable $end
-$var wire 1 . in $end
-$var wire 1 0 reset $end
+$var wire 1 , clk $end
+$var wire 1 - enable $end
+$var wire 1 - in $end
+$var wire 1 / reset $end
 $var parameter 32 1 bits $end
-$var reg 1 ) out $end
+$var reg 1 ' out $end
 $upscope $end
 $scope module timerbuf $end
 $var wire 1 2 clk $end
-$var wire 1 ) enable $end
-$var wire 1 0 reset $end
+$var wire 1 ' enable $end
+$var wire 1 / reset $end
 $var parameter 4 3 ONE $end
 $var parameter 4 4 ZERO $end
 $var parameter 32 5 bits $end
@@ -44,70 +44,64 @@ $upscope $end
 $scope module uut $end
 $var wire 1 ! MISO $end
 $var wire 8 7 address [7:0] $end
-$var wire 1 - clk $end
-$var wire 1 ' dataready $end
-$var wire 1 . enable $end
-$var wire 1 / ready $end
-$var wire 1 0 reset $end
+$var wire 1 , clk $end
+$var wire 1 % dataready $end
+$var wire 1 - enable $end
+$var wire 1 . ready $end
+$var wire 1 / reset $end
 $var wire 8 8 writedata [7:0] $end
 $var wire 8 9 read [7:0] $end
 $var wire 4 : pcounter [3:0] $end
 $var wire 1 ; done $end
-$var wire 2 < SCLKCount [1:0] $end
-$var wire 1 * SCLK $end
-$var wire 1 + NCS $end
-$var wire 1 , MOSI $end
-$var wire 8 = IN [7:0] $end
-$var parameter 1 > IDLE $end
-$var parameter 1 ? RW $end
-$var parameter 32 @ clkscale $end
-$var reg 16 A OUT [15:0] $end
-$var reg 1 B nextstate $end
-$var reg 1 C state $end
+$var wire 1 < cdone $end
+$var wire 2 = SCLKCount [-1:0] $end
+$var wire 1 ) NCS $end
+$var wire 1 * MOSI $end
+$var wire 8 > IN [7:0] $end
+$var parameter 1 ? IDLE $end
+$var parameter 1 @ RW $end
+$var parameter 32 A clkscale $end
+$var reg 16 B OUT [15:0] $end
+$var reg 1 ( SCLK $end
+$var reg 1 C nextstate $end
+$var reg 1 D state $end
 $scope module SCLKOut $end
-$var wire 1 - clk $end
-$var wire 1 . enable $end
-$var wire 1 0 reset $end
-$var parameter 2 D ONE $end
-$var parameter 2 E ZERO $end
-$var parameter 32 F bits $end
-$var reg 2 G count [1:0] $end
+$var wire 1 , clk $end
+$var wire 1 - enable $end
+$var wire 1 E reset $end
+$var parameter 2 F ONE $end
+$var parameter 2 G ZERO $end
+$var parameter 32 H bits $end
+$var reg 2 I count [-1:0] $end
 $upscope $end
 $scope module readdata $end
-$var wire 1 ' clk $end
-$var wire 1 H enable $end
-$var wire 1 0 reset $end
-$var wire 8 I in [7:0] $end
-$var parameter 32 J bits $end
-$var reg 8 K out [7:0] $end
+$var wire 1 % clk $end
+$var wire 1 J enable $end
+$var wire 1 / reset $end
+$var wire 8 K in [7:0] $end
+$var parameter 32 L bits $end
+$var reg 8 M out [7:0] $end
 $upscope $end
 $scope module shifter $end
 $var wire 1 ! bitin $end
-$var wire 16 L bufout [15:0] $end
-$var wire 1 - clk $end
-$var wire 1 . enable $end
-$var wire 1 0 reset $end
-$var wire 4 M pcounter [3:0] $end
-$var wire 1 , bitout $end
-$var wire 1 N benable $end
-$var reg 8 O bufin [7:0] $end
+$var wire 16 N bufout [15:0] $end
+$var wire 1 ( clk $end
+$var wire 1 O enable $end
+$var wire 1 P reset $end
+$var wire 4 Q pcounter [3:0] $end
+$var wire 1 < cdone $end
+$var wire 1 * bitout $end
+$var reg 8 R bufin [7:0] $end
 $var reg 1 ; done $end
-$scope module buffer $end
-$var wire 1 - clk $end
-$var wire 1 . enable $end
-$var wire 1 . in $end
-$var wire 1 0 reset $end
-$var parameter 32 P bits $end
-$var reg 1 N out $end
-$upscope $end
 $scope module timer $end
-$var wire 1 - clk $end
-$var wire 1 N enable $end
-$var wire 1 0 reset $end
-$var parameter 4 Q ONE $end
-$var parameter 4 R ZERO $end
-$var parameter 32 S bits $end
-$var reg 4 T count [3:0] $end
+$var wire 1 ( clk $end
+$var wire 1 O enable $end
+$var wire 1 P reset $end
+$var parameter 4 S ONE $end
+$var parameter 4 T ZERO $end
+$var parameter 32 U bits $end
+$var reg 4 V count [3:0] $end
+$var reg 1 < done $end
 $upscope $end
 $upscope $end
 $upscope $end
@@ -115,17 +109,16 @@ $upscope $end
 $enddefinitions $end
 $comment Show the parameter values. $end
 $dumpall
-b100 S
-b0 R
-b1 Q
-b1 P
-b1000 J
-b10 F
-b0 E
-b1 D
-b100 @
+b100 U
+b0 T
+b1 S
+b1000 L
+b0 H
+b0 G
+b1 F
+b1 A
+1@
 0?
-1>
 b100 5
 b0 4
 b1 3
@@ -133,20 +126,23 @@ b1 1
 $end
 #0
 $dumpvars
-b0 T
-b0 O
-0N
+b0 V
+b0 R
+b0 Q
+1P
+0O
+b0 N
 b0 M
-b1011101010010111 L
 b0 K
+1J
 b0 I
-1H
-b0 G
+1E
+0D
 0C
-0B
-b1011101010010111 A
+b0 B
+b0 >
 b0 =
-b0 <
+0<
 0;
 b0 :
 b0 9
@@ -154,361 +150,1386 @@ b10010111 8
 b10111010 7
 b0 6
 12
-10
-0/
-1.
-0-
-1,
-0+
+b10010111 0
+1/
+0.
+1-
+0,
+b10111010 +
 0*
-0)
-b0 (
+1)
+0(
 0'
-0&
-b0 %
-b10010111 $
-b10110110 #
-b10111010 "
+b0 &
+0%
+0$
+b0 #
+b10110110 "
 0!
 $end
 #5
 02
-1-
+1,
 #10
-1N
+0E
 12
-00
-0-
+0/
+0,
 #15
-b1 <
-b1 G
-1)
+0E
+1'
+b0 =
+b0 I
 02
-1-
+1,
 #20
-b1 (
+b1 &
 b1 6
-0,
-b1 :
-b1 M
-b1 T
 12
-0-
+0,
 #25
-b10 <
-b10 G
+0E
+b0 =
+b0 I
 02
-1-
+1,
 #30
-b10 (
+b10 &
 b10 6
-1,
-b10 :
-b10 M
-b10 T
 12
-0-
-#35
-1*
-b11 <
-b11 G
-02
-1-
-#40
-b11 (
-b11 6
-b11 :
-b11 M
-b11 T
-12
-0-
-#45
-0*
-b0 <
-b0 G
-02
-1-
-#50
-b100 (
-b100 6
-b100 :
-b100 M
-b100 T
-12
-0-
-#55
-b1 <
-b1 G
-02
-1-
-#60
-b101 (
-b101 6
 0,
-b101 :
-b101 M
-b101 T
-12
-0-
-#65
-b10 <
-b10 G
+#35
+0E
+b0 =
+b0 I
 02
-1-
-#70
-b110 (
-b110 6
+1C
 1,
-b110 :
-b110 M
-b110 T
+1.
+#40
+1O
+0P
+0)
+1*
+b1011101010010111 B
+b1011101010010111 N
+1C
+b11 &
+b11 6
+1D
 12
-0-
+0,
+#45
+0E
+1(
+b0 =
+b0 I
+02
+1*
+b1011101010010111 B
+b1011101010010111 N
+1C
+1,
+0.
+#50
+b100 &
+b100 6
+12
+0,
+#55
+b1 :
+b1 Q
+b1 V
+0E
+0*
+b1011101010010111 B
+b1011101010010111 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#60
+b101 &
+b101 6
+12
+0,
+#65
+0E
+b1011101010010111 B
+b1011101010010111 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#70
+b110 &
+b110 6
+12
+0,
 #75
 1*
-b11 <
-b11 G
+b10 :
+b10 Q
+b10 V
+0E
+b1011101010010111 B
+b1011101010010111 N
+1C
+0(
+b0 =
+b0 I
 02
-1-
+1,
 #80
-b111 (
+b111 &
 b111 6
-0,
-b111 :
-b111 M
-b111 T
 12
-0-
+0,
 #85
-0*
-b0 <
-b0 G
+0E
+1*
+b1011101010010111 B
+b1011101010010111 N
+1C
+1(
+b0 =
+b0 I
 02
-1-
+1,
 #90
 1!
-1&
-b1000 (
+1$
+b1000 &
 b1000 6
-1,
-b1000 :
-b1000 M
-b1000 T
 12
-0-
+0,
 #95
-b1 <
-b1 G
-b1 =
-b1 I
-b1 O
+b11 :
+b11 Q
+b11 V
+0E
+1*
+b1011101010010111 B
+b1011101010010111 N
+1C
+0(
+b0 =
+b0 I
 02
-1-
+1,
 #100
 0!
-0&
-b1001 (
+0$
+b1001 &
 b1001 6
-0,
-b1001 :
-b1001 M
-b1001 T
 12
-0-
+0,
 #105
-b10 =
-b10 I
-b10 O
-b10 <
-b10 G
+0E
+1*
+b1011101010010111 B
+b1011101010010111 N
+1C
+1(
+b0 =
+b0 I
 02
-1-
+1,
 #110
 1!
-1&
-b1010 (
+1$
+b1010 &
 b1010 6
-b1010 :
-b1010 M
-b1010 T
 12
-0-
+0,
 #115
+b100 :
+b100 Q
+b100 V
+0E
 1*
-b11 <
-b11 G
-b101 =
-b101 I
-b101 O
+b1011101010010111 B
+b1011101010010111 N
+1C
+0(
+b0 =
+b0 I
 02
-1-
-#120
-b1011 (
-b1011 6
 1,
-b1011 :
-b1011 M
-b1011 T
+#120
+b1011 &
+b1011 6
 12
-0-
+0,
 #125
-b1011 =
-b1011 I
-b1011 O
-0*
-b0 <
-b0 G
+0E
+1*
+b1011101010010111 B
+b1011101010010111 N
+1C
+1(
+b0 =
+b0 I
 02
-1-
+1,
 #130
 0!
-0&
-b1100 (
+0$
+b1100 &
 b1100 6
-0,
-b1100 :
-b1100 M
-b1100 T
 12
-0-
+0,
 #135
-b1 <
-b1 G
-b10110 =
-b10110 I
-b10110 O
+b101 :
+b101 Q
+b101 V
+0E
+0*
+b1011101010010111 B
+b1011101010010111 N
+1C
+0(
+b0 =
+b0 I
 02
-1-
+1,
 #140
 1!
-1&
-b1101 (
+1$
+b1101 &
 b1101 6
-1,
-b1101 :
-b1101 M
-b1101 T
 12
-0-
+0,
 #145
-b101101 =
-b101101 I
-b101101 O
-b10 <
-b10 G
+0E
+b1011101010010111 B
+b1011101010010111 N
+1C
+1(
+b0 =
+b0 I
 02
-1-
+1,
 #150
-b1110 (
+b1110 &
 b1110 6
-b1110 :
-b1110 M
-b1110 T
 12
-0-
+0,
 #155
 1*
-b11 <
-b11 G
-b1011011 =
-b1011011 I
-b1011011 O
+b110 :
+b110 Q
+b110 V
+0E
+b1011101010010111 B
+b1011101010010111 N
+1C
+0(
+b0 =
+b0 I
 02
-1-
+1,
 #160
 0!
-0&
-b1111 (
+0$
+b1111 &
 b1111 6
-b1111 :
-b1111 M
-b1111 T
 12
-0-
-#165
-b10110110 %
-b10110110 9
-b10110110 K
-1B
-1,
-b1011101010010111 A
-b1011101010010111 L
-1'
-1;
-b10110110 =
-b10110110 I
-b10110110 O
-0*
-b0 <
-b0 G
-02
-1-
-#170
-1+
 0,
-b0 A
-b0 L
-1B
-b0 (
-b0 6
+#165
+0E
+1*
+b1011101010010111 B
+b1011101010010111 N
 1C
-b0 :
-b0 M
-b0 T
+1(
+b0 =
+b0 I
+02
+1,
+#170
+b0 &
+b0 6
 12
-0-
+0,
 #175
-b1 <
-b1 G
+b111 :
+b111 Q
+b111 V
+0E
+0*
+b1011101010010111 B
+b1011101010010111 N
+1C
+0(
+b0 =
+b0 I
 02
-1-
+1,
 #180
-b1 (
+b1 &
 b1 6
-b1 :
-b1 M
-b1 T
 12
-0-
+0,
 #185
-b10 <
-b10 G
+0E
+b1011101010010111 B
+b1011101010010111 N
+1C
+1(
+b0 =
+b0 I
 02
-1-
+1,
 #190
-b10 (
+b10 &
 b10 6
-b10 :
-b10 M
-b10 T
 12
-0-
+0,
 #195
 1*
-b11 <
-b11 G
+b1000 :
+b1000 Q
+b1000 V
+0E
+b1011101010010111 B
+b1011101010010111 N
+1C
+0(
+b0 =
+b0 I
 02
-1-
+1,
 #200
-b11 (
+b11 &
 b11 6
-b11 :
-b11 M
-b11 T
 12
-0-
+0,
 #205
-0*
-b0 <
-b0 G
+0E
+1*
+b1011101010010111 B
+b1011101010010111 N
+1C
+1(
+b0 =
+b0 I
 02
-1-
+1,
 #210
-b100 (
+b100 &
 b100 6
-b100 :
-b100 M
-b100 T
 12
-0-
+0,
 #215
+b1001 :
+b1001 Q
+b1001 V
+0E
+0*
+b1011101010010111 B
+b1011101010010111 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#220
+b101 &
+b101 6
+12
+0,
+#225
+0E
+b1011101010010111 B
+b1011101010010111 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#230
+b110 &
+b110 6
+12
+0,
+#235
+b1010 :
+b1010 Q
+b1010 V
+0E
+b1011101010010111 B
+b1011101010010111 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#240
+b111 &
+b111 6
+12
+0,
+#245
+0E
+b1011101010010111 B
+b1011101010010111 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#250
+1!
+1$
+b1000 &
+b1000 6
+12
+0,
+#255
+1*
+b1011 :
+b1011 Q
+b1011 V
+0E
+b1011101010010111 B
+b1011101010010111 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#260
+0!
+0$
+b1001 &
+b1001 6
+12
+0,
+#265
+0E
+1*
+b1011101010010111 B
+b1011101010010111 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#270
+1!
+1$
+b1010 &
+b1010 6
+12
+0,
+#275
+b1100 :
+b1100 Q
+b1100 V
+0E
+0*
+b1011101010010111 B
+b1011101010010111 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#280
+b1011 &
+b1011 6
+12
+0,
+#285
+b1 >
+b1 K
+b1 R
+0E
+b1011101010010111 B
+b1011101010010111 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#290
+0!
+0$
+b1100 &
+b1100 6
+12
+0,
+#295
+1*
+b1101 :
+b1101 Q
+b1101 V
+0E
+b1011101010010111 B
+b1011101010010111 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#300
+1!
+1$
+b1101 &
+b1101 6
+12
+0,
+#305
+b11 >
+b11 K
+b11 R
+0E
+1*
+b1011101010010111 B
+b1011101010010111 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#310
+b1110 &
+b1110 6
+12
+0,
+#315
+b1110 :
+b1110 Q
+b1110 V
+0E
+1*
+b1011101010010111 B
+b1011101010010111 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#320
+0!
+0$
+b1111 &
+b1111 6
+12
+0,
+#325
+b110 >
+b110 K
+b110 R
+0E
+1*
+b1011101010010111 B
+b1011101010010111 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#330
+b0 &
+b0 6
+12
+0,
+#335
+b1111 :
+b1111 Q
+b1111 V
+0E
+1*
+b1011101010010111 B
+b1011101010010111 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#340
+b1 &
+b1 6
+12
+0,
+#345
+b1100 #
+b1100 9
+b1100 M
+1%
+1;
+b1100 >
+b1100 K
+b1100 R
+0E
+1*
+b1011101010010111 B
+b1011101010010111 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#350
+b10 &
+b10 6
+12
+0,
+#355
+1<
+0E
+1*
+b1011101010010111 B
+b1011101010010111 N
+0C
+0(
+b0 =
+b0 I
+02
+1,
+#360
+0<
+b0 :
+b0 Q
+b0 V
+0%
+0;
+b0 >
+b0 K
+b0 R
+0O
+1P
+1)
+0*
+b0 B
+b0 N
+b11 &
+b11 6
+0D
+12
+0,
+#365
+0E
+b0 =
+b0 I
+02
+1,
+#370
+b100 &
+b100 6
+12
+0,
+#375
+0E
+b0 =
+b0 I
+02
+1,
+#380
+b101 &
+b101 6
+12
+0,
+#385
+0E
+b0 =
+b0 I
+02
+1,
+#390
+b110 &
+b110 6
+12
+0,
+#395
+0E
+b0 =
+b0 I
+02
+1C
+1,
+1.
+b11000 0
+b11000 8
+b11100111 +
+b11100111 7
+#400
+1O
+0P
+0)
+1*
+b1110011100011000 B
+b1110011100011000 N
+1C
+b111 &
+b111 6
+1D
+12
+0,
+#405
+0E
+1(
+b0 =
+b0 I
+02
+1*
+b1110011100011000 B
+b1110011100011000 N
+1C
+1,
+0.
+#410
+1!
+1$
+b1000 &
+b1000 6
+12
+0,
+#415
+b1 :
+b1 Q
+b1 V
+0E
+1*
+b1110011100011000 B
+b1110011100011000 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#420
+0!
+0$
+b1001 &
+b1001 6
+12
+0,
+#425
+0E
+1*
+b1110011100011000 B
+b1110011100011000 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#430
+1!
+1$
+b1010 &
+b1010 6
+12
+0,
+#435
+b10 :
+b10 Q
+b10 V
+0E
+1*
+b1110011100011000 B
+b1110011100011000 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#440
+b1011 &
+b1011 6
+12
+0,
+#445
+0E
+1*
+b1110011100011000 B
+b1110011100011000 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#450
+0!
+0$
+b1100 &
+b1100 6
+12
+0,
+#455
+b11 :
+b11 Q
+b11 V
+0E
+0*
+b1110011100011000 B
+b1110011100011000 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#460
+1!
+1$
+b1101 &
+b1101 6
+12
+0,
+#465
+0E
+b1110011100011000 B
+b1110011100011000 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#470
+b1110 &
+b1110 6
+12
+0,
+#475
+b100 :
+b100 Q
+b100 V
+0E
+b1110011100011000 B
+b1110011100011000 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#480
+0!
+0$
+b1111 &
+b1111 6
+12
+0,
+#485
+0E
+b1110011100011000 B
+b1110011100011000 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#490
+b0 &
+b0 6
+12
+0,
+#495
+1*
+b101 :
+b101 Q
+b101 V
+0E
+b1110011100011000 B
+b1110011100011000 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#500
+b1 &
+b1 6
+12
+0,
+#505
+0E
+1*
+b1110011100011000 B
+b1110011100011000 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#510
+b10 &
+b10 6
+12
+0,
+#515
+b110 :
+b110 Q
+b110 V
+0E
+1*
+b1110011100011000 B
+b1110011100011000 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#520
+b11 &
+b11 6
+12
+0,
+#525
+0E
+1*
+b1110011100011000 B
+b1110011100011000 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#530
+b100 &
+b100 6
+12
+0,
+#535
+b111 :
+b111 Q
+b111 V
+0E
+1*
+b1110011100011000 B
+b1110011100011000 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#540
+b101 &
+b101 6
+12
+0,
+#545
+0E
+1*
+b1110011100011000 B
+b1110011100011000 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#550
+b110 &
+b110 6
+12
+0,
+#555
+b1000 :
+b1000 Q
+b1000 V
+0E
+0*
+b1110011100011000 B
+b1110011100011000 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#560
+b111 &
+b111 6
+12
+0,
+#565
+0E
+b1110011100011000 B
+b1110011100011000 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#570
+1!
+1$
+b1000 &
+b1000 6
+12
+0,
+#575
+b1001 :
+b1001 Q
+b1001 V
+0E
+b1110011100011000 B
+b1110011100011000 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#580
+0!
+0$
+b1001 &
+b1001 6
+12
+0,
+#585
+0E
+b1110011100011000 B
+b1110011100011000 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#590
+1!
+1$
+b1010 &
+b1010 6
+12
+0,
+#595
+b1010 :
+b1010 Q
+b1010 V
+0E
+b1110011100011000 B
+b1110011100011000 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#600
+b1011 &
+b1011 6
+12
+0,
+#605
+b1 >
+b1 K
+b1 R
+0E
+b1110011100011000 B
+b1110011100011000 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#610
+0!
+0$
+b1100 &
+b1100 6
+12
+0,
+#615
+1*
+b1011 :
+b1011 Q
+b1011 V
+0E
+b1110011100011000 B
+b1110011100011000 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#620
+1!
+1$
+b1101 &
+b1101 6
+12
+0,
+#625
+b11 >
+b11 K
+b11 R
+0E
+1*
+b1110011100011000 B
+b1110011100011000 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#630
+b1110 &
+b1110 6
+12
+0,
+#635
+b1100 :
+b1100 Q
+b1100 V
+0E
+1*
+b1110011100011000 B
+b1110011100011000 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#640
+0!
+0$
+b1111 &
+b1111 6
+12
+0,
+#645
+b110 >
+b110 K
+b110 R
+0E
+1*
+b1110011100011000 B
+b1110011100011000 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#650
+b0 &
+b0 6
+12
+0,
+#655
+b1101 :
+b1101 Q
+b1101 V
+0E
+0*
+b1110011100011000 B
+b1110011100011000 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#660
+b1 &
+b1 6
+12
+0,
+#665
+b1100 >
+b1100 K
+b1100 R
+0E
+b1110011100011000 B
+b1110011100011000 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#670
+b10 &
+b10 6
+12
+0,
+#675
+b1110 :
+b1110 Q
+b1110 V
+0E
+b1110011100011000 B
+b1110011100011000 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#680
+b11 &
+b11 6
+12
+0,
+#685
+b11000 >
+b11000 K
+b11000 R
+0E
+b1110011100011000 B
+b1110011100011000 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#690
+b100 &
+b100 6
+12
+0,
+#695
+b1111 :
+b1111 Q
+b1111 V
+0E
+b1110011100011000 B
+b1110011100011000 N
+1C
+0(
+b0 =
+b0 I
+02
+1,
+#700
+b101 &
+b101 6
+12
+0,
+#705
+b110000 #
+b110000 9
+b110000 M
+1%
+1;
+b110000 >
+b110000 K
+b110000 R
+0E
+b1110011100011000 B
+b1110011100011000 N
+1C
+1(
+b0 =
+b0 I
+02
+1,
+#710
+b110 &
+b110 6
+12
+0,
+#715
+1<
+0E
+b1110011100011000 B
+b1110011100011000 N
+0C
+0(
+b0 =
+b0 I
+02
+1,
+#720
+0<
+b0 :
+b0 Q
+b0 V
+0%
+0;
+b0 >
+b0 K
+b0 R
+0O
+1P
+1)
+b0 B
+b0 N
+b111 &
+b111 6
+0D
+12
+0,
+#725
+0E
+b0 =
+b0 I
+02
+1,
+#730
+1!
+1$
+b1000 &
+b1000 6
+12
+0,
+#735
+0E
+b0 =
+b0 I
+02
+1,
+#740
+0!
+0$
+b1001 &
+b1001 6
+12
+0,
+#745
+0E
+b0 =
+b0 I
+02
+1,
+#750
+1!
+1$
+b1010 &
+b1010 6
+12
+0,
+#755

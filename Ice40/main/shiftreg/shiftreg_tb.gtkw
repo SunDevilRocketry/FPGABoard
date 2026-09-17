@@ -11,11 +11,12 @@ shiftreg_tb.benable
 shiftreg_tb.bitout
 shiftreg_tb.bufin[7:0]
 shiftreg_tb.bufout[15:0]
+shiftreg_tb.cdone
 shiftreg_tb.clk
 shiftreg_tb.count[3:0]
 shiftreg_tb.done
 shiftreg_tb.dummy[15:0]
 shiftreg_tb.dummytester
 shiftreg_tb.enable
-shiftreg_tb.pcounter[2:0]
+shiftreg_tb.pcounter[3:0]
 shiftreg_tb.reset
