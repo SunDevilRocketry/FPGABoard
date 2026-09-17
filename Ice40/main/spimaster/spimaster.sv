@@ -1,21 +1,22 @@
 //spimaster is kinda misleading, this is more of a spi reader that someone tried to have write too
 
 module spimaster #(parameter clkscale = 4) (
-    input logic  clk, enable, reset, MISO, input logic [7:0] address, writedata,
+    input logic clk, enable, reset, MISO, ready, input logic [7:0] address, writedata, 
 
     output logic [7:0] read, output logic dataready, MOSI, SCLK, NCS
 );
 
     //shorthands for address state and readwrite state
-    localparam ADDR = 2'd0, RW = 2'd1, IDLE = 2'd2;
+    localparam RW = 1'b0, IDLE = 1'b1;
 
     //out, switches between writing address and data
-    logic [7:0] OUT, IN;
+    logic [7:0] IN;
+    logic [15:0] OUT;
 
     //state machine stuff
-    logic [1:0] state, nextstate;
+    logic state, nextstate;
     logic done;
-    logic [2:0] pcounter;
+    logic [3:0] pcounter;
 
     //lower NCS when were not in idle
     //Due to timing requirements, a delay on actual operation may need to take place to ensure NCS setup time
@@ -31,7 +32,7 @@ module spimaster #(parameter clkscale = 4) (
     //data is ready when done is high and state is RW
     //basically when done in the RW state SOMETHING is finished
     //readwrite agnostic code may or may not kill me later on 
-    assign dataready = done & (state == IDLE);
+    assign dataready = done;
 
     //the classic
     shiftreg shifter (.clk(clk), .reset(reset), .enable(enable), .bitin(MISO), .bufout(OUT), .done(done), .bitout(MOSI), .bufin(IN), .pcounter(pcounter));
@@ -41,32 +42,30 @@ module spimaster #(parameter clkscale = 4) (
     //state machine, when done with one, start doing the other. Goes forever bar enable and reset
     always_comb begin
         //always reset to a known value in comb code
-        nextstate = ADDR;
+        nextstate = RW;
         OUT = '0;
         //state switch method
         //a case is just a switch, you cs know this one
         //change to unique case later? linter hates it for some reason
         case (state)
-            ADDR: nextstate = (pcounter==3'd6)?RW:ADDR;
-            RW: nextstate = (pcounter==3'd6)?IDLE:RW;
-            IDLE: nextstate = (enable&&NCS)?ADDR:IDLE;
-            default: nextstate = ADDR;
+            RW: nextstate = (dataready)?IDLE:RW;
+            IDLE: nextstate = (ready)?RW:IDLE;
+            default: nextstate = IDLE;
         endcase
 
         //output selection method
         case (state)
-            ADDR: OUT = address;
-            RW: OUT = writedata;
+            RW: OUT = {1'b1, address[6:0], writedata};
             IDLE: OUT = '0;
-            default: OUT = address;
+            default: OUT = '0;
         endcase
     end
 
     //on clock cycle, change state
     //why is this negedge? am I tweaking?
-    always_ff @ (posedge clk or posedge reset) begin
+    always_ff @ (negedge clk or posedge reset) begin
         if (reset) begin
-            state <= ADDR;
+            state <= RW;
         end
         else if (enable) begin
             state <= nextstate;

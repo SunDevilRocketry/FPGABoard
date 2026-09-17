@@ -10,7 +10,7 @@
 shiftreg_tb.benable
 shiftreg_tb.bitout
 shiftreg_tb.bufin[7:0]
-shiftreg_tb.bufout[7:0]
+shiftreg_tb.bufout[15:0]
 shiftreg_tb.clk
 shiftreg_tb.count[3:0]
 shiftreg_tb.done

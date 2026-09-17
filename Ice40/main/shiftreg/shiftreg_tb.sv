@@ -1,7 +1,7 @@
 module shiftreg_tb();
 
     logic clk, reset, enable, bitin;
-    logic [7:0] bufout;
+    logic [15:0] bufout;
     logic [2:0] pcounter;
 
     logic done, bitout, dummytester, benable;
@@ -20,15 +20,10 @@ module shiftreg_tb();
 
     initial begin
         $dumpvars(0, shiftreg_tb);
-        clk = 1'b0; reset = 1'b1; enable = 1'b1; bufout = 8'b10010001; #5;
+        clk = 1'b0; reset = 1'b1; enable = 1'b1; ready = 1'b0; bufout = 16'b1001000101101110; #5;
         clk = 1'b1; reset = 1'b1; enable = 1'b1; #5;
         clk = 1'b0; reset = 1'b0; #5;
-        repeat(16) begin
-            clk = ~clk; #5;
-        end
-        bufout = 8'b01101110; clk = ~clk; #5;
-        clk = ~clk; #5;
-        repeat(16) begin
+        repeat(40) begin
             clk = ~clk; #5;
         end
     end
