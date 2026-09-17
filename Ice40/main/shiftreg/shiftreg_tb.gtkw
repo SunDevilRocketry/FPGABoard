@@ -17,4 +17,5 @@ shiftreg_tb.done
 shiftreg_tb.dummy[15:0]
 shiftreg_tb.dummytester
 shiftreg_tb.enable
+shiftreg_tb.pcounter[2:0]
 shiftreg_tb.reset

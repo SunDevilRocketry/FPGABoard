@@ -1,0 +1,368 @@
+$date
+	Wed Sep 16 21:56:49 2026
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module shiftreg_tb $end
+$var wire 16 ! dummy [15:0] $end
+$var wire 3 " pcounter [2:0] $end
+$var wire 1 # dummytester $end
+$var wire 1 $ done $end
+$var wire 4 % count [3:0] $end
+$var wire 8 & bufin [7:0] $end
+$var wire 1 ' bitout $end
+$var wire 1 ( benable $end
+$var reg 8 ) bufout [7:0] $end
+$var reg 1 * clk $end
+$var reg 1 + enable $end
+$var reg 1 , reset $end
+$scope module buffer $end
+$var wire 1 * clk $end
+$var wire 1 + enable $end
+$var wire 1 + in $end
+$var wire 1 , reset $end
+$var parameter 32 - bits $end
+$var reg 1 ( out $end
+$upscope $end
+$scope module tester $end
+$var wire 1 . bitin $end
+$var wire 8 / bufout [7:0] $end
+$var wire 1 * clk $end
+$var wire 1 + enable $end
+$var wire 1 , reset $end
+$var wire 3 0 pcounter [2:0] $end
+$var wire 1 $ done $end
+$var wire 3 1 check [2:0] $end
+$var wire 1 2 benable $end
+$var reg 1 ' bitout $end
+$var reg 8 3 bufin [7:0] $end
+$var reg 8 4 sampleout [7:0] $end
+$scope module buffer $end
+$var wire 1 * clk $end
+$var wire 1 + enable $end
+$var wire 1 + in $end
+$var wire 1 , reset $end
+$var parameter 32 5 bits $end
+$var reg 1 2 out $end
+$upscope $end
+$scope module timer $end
+$var wire 1 * clk $end
+$var wire 1 2 enable $end
+$var wire 1 , reset $end
+$var parameter 3 6 ONE $end
+$var parameter 3 7 ZERO $end
+$var parameter 32 8 bits $end
+$var reg 3 9 count [2:0] $end
+$upscope $end
+$upscope $end
+$scope module timerbuf $end
+$var wire 1 : clk $end
+$var wire 1 ( enable $end
+$var wire 1 , reset $end
+$var parameter 4 ; ONE $end
+$var parameter 4 < ZERO $end
+$var parameter 32 = bits $end
+$var reg 4 > count [3:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b100 =
+b0 <
+b1 ;
+b11 8
+b0 7
+b1 6
+b1 5
+b1 -
+$end
+#0
+$dumpvars
+b0 >
+1:
+b0 9
+b10010001 4
+b0 3
+02
+b111 1
+b0 0
+b10010001 /
+0.
+1,
+1+
+0*
+b10010001 )
+0(
+x'
+b0 &
+b0 %
+0$
+0#
+b0 "
+b10110110 !
+$end
+#5
+0:
+1*
+#10
+12
+1'
+1:
+0,
+0*
+#15
+1(
+0:
+1*
+#20
+b1 %
+b1 >
+b110 1
+b1 "
+b1 0
+b1 9
+1:
+0*
+#25
+0:
+1*
+#30
+b10 %
+b10 >
+b101 1
+b10 "
+b10 0
+b10 9
+0'
+1:
+0*
+#35
+0:
+1*
+#40
+b11 %
+b11 >
+b100 1
+b11 "
+b11 0
+b11 9
+1:
+0*
+#45
+0:
+1*
+#50
+b100 %
+b100 >
+b11 1
+b100 "
+b100 0
+b100 9
+1'
+1:
+0*
+#55
+0:
+1*
+#60
+b101 %
+b101 >
+b10 1
+b101 "
+b101 0
+b101 9
+0'
+1:
+0*
+#65
+0:
+1*
+#70
+b110 %
+b110 >
+b1 1
+b110 "
+b110 0
+b110 9
+1:
+0*
+#75
+0:
+1*
+#80
+b111 %
+b111 >
+1$
+b0 1
+b111 "
+b111 0
+b111 9
+1:
+0*
+#85
+0:
+1*
+#90
+1#
+1.
+b1000 %
+b1000 >
+0$
+b111 1
+b0 "
+b0 0
+b0 9
+1'
+1:
+0*
+#95
+b1 &
+b1 3
+0:
+1*
+b1101110 )
+b1101110 /
+#100
+0#
+0.
+b1001 %
+b1001 >
+b110 1
+b1 "
+b1 0
+b1 9
+0'
+1:
+0*
+#105
+b10 &
+b10 3
+0:
+1*
+#110
+1#
+1.
+b1010 %
+b1010 >
+b101 1
+b10 "
+b10 0
+b10 9
+1'
+1:
+0*
+#115
+b101 &
+b101 3
+0:
+1*
+#120
+b1011 %
+b1011 >
+b100 1
+b11 "
+b11 0
+b11 9
+1:
+0*
+#125
+b1011 &
+b1011 3
+0:
+1*
+#130
+0#
+0.
+b1100 %
+b1100 >
+b11 1
+b100 "
+b100 0
+b100 9
+0'
+1:
+0*
+#135
+b10110 &
+b10110 3
+0:
+1*
+#140
+1#
+1.
+b1101 %
+b1101 >
+b10 1
+b101 "
+b101 0
+b101 9
+1'
+1:
+0*
+#145
+b101101 &
+b101101 3
+0:
+1*
+#150
+b1110 %
+b1110 >
+b1 1
+b110 "
+b110 0
+b110 9
+1:
+0*
+#155
+b1011011 &
+b1011011 3
+0:
+1*
+#160
+0#
+0.
+b1111 %
+b1111 >
+1$
+b0 1
+b111 "
+b111 0
+b111 9
+1:
+0*
+#165
+b10110110 &
+b10110110 3
+0:
+1*
+#170
+b0 %
+b0 >
+0$
+b111 1
+b0 "
+b0 0
+b0 9
+0'
+1:
+0*
+#175
+b1101100 &
+b1101100 3
+0:
+1*
+#180
+b1 %
+b1 >
+b110 1
+b1 "
+b1 0
+b1 9
+1:
+0*
+#185

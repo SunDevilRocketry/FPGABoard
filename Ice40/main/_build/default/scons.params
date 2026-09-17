@@ -1,0 +1,39 @@
+timestamp: "16215649269"
+arch: ICE40
+fpga_info {
+  fpga_id: "ice40up5k-sg48"
+  part_num: "ICE40UP5K-SG48"
+  size: "5k"
+  ice40_params {
+    type: "up5k"
+    package: "sg48"
+  }
+}
+environment {
+  platform_id: "darwin-arm64"
+  is_windows: false
+  terminal_mode: FORCE_TERMINAL
+  theme_name: "light"
+  debug_level: 0
+  yosys_path: "/Users/dave/.apio/packages/oss-cad-suite/share/yosys"
+  trellis_path: "/Users/dave/.apio/packages/oss-cad-suite/share/trellis"
+  scons_shell_id: "zsh"
+  prjxray_db_path: "/Users/dave/.apio/packages/openxc7/share/nextpnr/external/prjxray-db"
+  chipdb_path: "/Users/dave/.apio/packages/openxc7/chipdb"
+  apio_home_path: "/Users/dave/.apio"
+  env_build_path: "_build/default"
+}
+apio_env_params {
+  env_name: "default"
+  board_id: "upduino31"
+  top_module: "top"
+  constraint_file: "upduino.pcf"
+}
+target {
+  sim {
+    testbench_path: "shiftreg/shiftreg_tb.sv"
+    force_sim: false
+    no_gtkwave: false
+    detach_gtkwave: false
+  }
+}

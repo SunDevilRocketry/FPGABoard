@@ -1,3 +1,3 @@
-module top (input clk, output test_pin);
-    assign test_pin = clk;
+module top (input gpio_25, output gpio_23);
+    assign gpio_23 = gpio_25;
 endmodule

@@ -3,13 +3,13 @@ module spimaster_tb();
     logic clk, reset, enable, MISO;
     logic [7:0] address, writedata;
 
-    logic dataready, MOSI, dummytester, benable;
+    logic dataready, MOSI, dummytester, benable, SCLK, NCS;
     logic [7:0] read;
     logic[15:0] dummy;
 
     logic [3:0] count;
 
-    spimaster uut (clk, enable, reset, MISO, address, writedata, read, dataready, MOSI);
+    spimaster uut (clk, enable, reset, MISO, address, writedata, read, dataready, MOSI, SCLK, NCS);
     counter #(4) timerbuf (.clk(~clk), .enable(benable), .reset(reset), .count(count));
     dreg #(1) buffer (.clk(clk), .reset(reset), .enable(enable), .in(enable), .out(benable));
 
@@ -25,9 +25,14 @@ module spimaster_tb();
         clk = 1'b0; reset = 1'b1; enable = 1'b1; #5;
         clk = 1'b1; reset = 1'b1; enable = 1'b1; #5;
         clk = 1'b0; reset = 1'b0; #5;
-        repeat(40) begin
+        repeat(31) begin
             clk = ~clk; #5;
         end
+        enable = 1'b0;
+        repeat(10) begin
+            clk = ~clk; #5;
+        end
+
     end
 
 endmodule

@@ -1,17 +1,18 @@
 module shiftreg(
     input logic clk, reset, enable, bitin, input logic [7:0] bufout,
 
-    output logic done, bitout, output logic [7:0] bufin
+    output logic done, bitout, output logic [7:0] bufin, output logic [2:0] pcounter
 );
 
-    logic [2:0] count;
     logic [7:0] sampleout;
     logic benable;
+    logic [2:0] check;
+    assign check = 3'd7-pcounter;
     //the dreg is to ensure after the reset, the first clock cycle does not start at 0, but rather 1
     //Look at count wire with *apio sim  shiftreg/shiftreg_tb.sv* for more info
-    counter #(3) timer (.clk(clk), .reset(reset), .enable(benable), .count(count));
-    dreg #(1) buffer (.clk(clk), .reset(reset), .enable(enable), .in(enable), .out(benable));
-    assign done = count == 3'd7;
+    counter_neg #(3) timer (.clk(clk), .reset(reset), .enable(benable), .count(pcounter));
+    dreg_neg #(1) buffer (.clk(clk), .reset(reset), .enable(enable), .in(enable), .out(benable));
+    assign done = pcounter == 3'd7;
     
     //if reset or clk goes high,
     always_ff @ (posedge reset or posedge clk) begin
@@ -34,15 +35,7 @@ module shiftreg(
         //otherwise if enable is high,
         else if (enable) begin
             //if done is high, get a new sample and bit out from the bufout
-            if (done) begin
-                sampleout <= {bufout[6:0], '0};
-                bitout <= bufout[7];
-            end
-            //otherwise, keep shifting
-            else begin
-                sampleout <= {sampleout[6:0], '0};
-                bitout <= sampleout[7];
-            end
+            bitout = bufout[check];
         end
     end
 endmodule
