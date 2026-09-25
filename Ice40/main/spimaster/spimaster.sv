@@ -23,13 +23,13 @@ module spimaster #(parameter clkscale = 4) (
 
     //using the clk scale parameter, generate a signal that scales down the sclk by that amount
     //$clog2 returns ceil log2(x), so in the default case where clkscale = 4, returns 2
-    logic [$clog2(clkscale)-1:0] SCLKCount;
-    counter #($clog2(clkscale)) SCLKOut (.clk(clk), .reset(reset | (SCLKCount == clkscale)), .enable(enable), .count(SCLKCount));
+    logic [$clog2(clkscale):0] SCLKCount;
+    counter #($clog2(clkscale)+'d1) SCLKOut (.clk(clk), .reset(reset | (SCLKCount == clkscale)), .enable(enable), .count(SCLKCount));
 
     //when the count hits the scalar, flip SCLK
     always_ff @ (posedge clk or posedge reset) begin
         if (reset | NCS) SCLK <= '0;
-        else if (SCLKCount == (clkscale-1)) SCLK <= ~SCLK;
+        else if (SCLKCount == (clkscale-'d1)) SCLK <= ~SCLK;
     end
 
     //data is ready when done is high
@@ -53,7 +53,7 @@ module spimaster #(parameter clkscale = 4) (
             //this takes 5 for the cycle, slightly cutting off the end. This will probably be safe due to scaling inaccuracies, 
             //but is definately something to change in the future.
             //for calc, the low period is (n-1) clk cycles
-            RW: nextstate = (cdone&(SCLKCount==clkscale-1))?IDLE:RW;
+            RW: nextstate = (cdone&(SCLKCount==clkscale-'d1))?IDLE:RW;
             default: nextstate = IDLE;
         endcase
 
