@@ -1,50 +1,32 @@
 module shiftreg(
-    input logic clk, reset, enable, bitin, input logic [7:0] bufout,
+    input logic clk, reset, enable, bitin, input logic [15:0] bufout,
 
-    output logic done, bitout, output logic [7:0] bufin
+    output logic done, bitout, output logic [7:0] bufin, output logic [3:0] pcounter, output logic cdone
 );
-
-    logic [2:0] count;
-    logic [7:0] sampleout;
-    logic benable;
     //the dreg is to ensure after the reset, the first clock cycle does not start at 0, but rather 1
     //Look at count wire with *apio sim  shiftreg/shiftreg_tb.sv* for more info
-    counter #(3) timer (.clk(clk), .reset(reset), .enable(benable), .count(count));
-    dreg #(1) buffer (.clk(clk), .reset(reset), .enable(enable), .in(enable), .out(benable));
-    assign done = count == 3'd7;
+    counter_nrst_neg #(4) timer (.clk(clk), .reset(reset), .enable(enable), .count(pcounter), .done(cdone));
     
     //if reset or clk goes high,
     always_ff @ (posedge reset or posedge clk) begin
-        //if reset is high, we make inbuf 0
+        //if reset is high, we make bufin and done 0
         if (reset) begin
             bufin <= '0;
+            done <= '0;
         end
-        //otherwise, we take the first 7 bits of bufin and add bitin
-        else if (enable) begin
+        //otherwise, if enabled and the program counter is above 7 (not in address)
+        else if (enable & (pcounter >= 7)) begin
+            //shift in a bit, and 
             bufin <= {bufin[6:0], bitin};
+
+            //if pcounter is 15, set done high
+            if (pcounter==4'd15) done <= 1;
         end
     end
 
-    //when reset goes high or clk goes LOW,
-    always_ff @ (posedge reset or negedge clk) begin
-        //if reset is high, get a new out buffer
-        if (reset) begin
-            sampleout <= bufout;
-        end
-        //otherwise if enable is high,
-        else if (enable) begin
-            //if done is high, get a new sample and bit out from the bufout
-            if (done) begin
-                sampleout <= {bufout[6:0], '0};
-                bitout <= bufout[7];
-            end
-            //otherwise, keep shifting
-            else begin
-                sampleout <= {sampleout[6:0], '0};
-                bitout <= sampleout[7];
-            end
-        end
-    end
+    //bitout equals whatever bit is dictated by the counter, counting back from 15
+    assign bitout = bufout[4'd15-pcounter];
+
 endmodule
 
 
