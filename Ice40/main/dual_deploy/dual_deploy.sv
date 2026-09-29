@@ -19,7 +19,9 @@ module dual_deploy #(
     input logic enable,
 
      // LSM6DSV320X raw accel (twos comp)
-    input logic signed [15:0] accel,
+    input logic signed [15:0] accel_x,
+    input logic signed [15:0] accel_y,
+    input logic signed [15:0] accel_z,
     
     // BMP581 raw pressure (Pa × 64)
     input logic [23:0] pressure, 
@@ -31,11 +33,17 @@ module dual_deploy #(
 
 // logic!
 
+    logic x_near_zero, y_near_zero, z_near_zero;
     logic accel_near_zero;
     logic high_up;
 
-    assign accel_near_zero = (accel > -ACC_TOL) && (accel < ACC_TOL);
-    assign high_up = (pressure < P_THRESH); // lower pressure -> higher alt
+    assign x_near_zero = (accel_x > -ACC_TOL) && (accel_x < ACC_TOL);
+    assign y_near_zero = (accel_y > -ACC_TOL) && (accel_y < ACC_TOL);
+    assign z_near_zero = (accel_z > -ACC_TOL) && (accel_z < ACC_TOL);
+
+   
+    assign accel_near_zero = x_near_zero && y_near_zero && z_near_zero;
+    assign high_up = (pressure < P_THRESH); // lower press =  higher alt
 
     always_ff @(posedge clk or posedge reset) begin 
         // if reset = 1 deploy = 0 
