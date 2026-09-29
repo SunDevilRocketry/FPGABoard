@@ -30,7 +30,7 @@ module spimaster #(parameter clkscale = 4) (
     always_ff @ (posedge clk or posedge reset) begin
         //Cool fact! reset and NCS do the same thing, but when you have an event like (reset | NCS), APIO freaks out cuz it cant find the reset event! Thanks Claude!
         if (reset) SCLK <= '0;
-        else if (NCS) Sclk <= '0;
+        else if (NCS) SCLK <= '0;
         else if (SCLKCount == (clkscale-'d1)) SCLK <= ~SCLK;
     end
 

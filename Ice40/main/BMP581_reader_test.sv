@@ -12,9 +12,11 @@ module BMP581_reader_test (input wire MISO, output wire MOSI, SCLK, NCS, led_gre
     //OUTs
     logic dataready;
     logic [7:0] read;
+    logic [9:0] count;
 
-    assign addy = 8'h01;
-    assign ready = ~(read == 8'b01010000);
+    assign addy = 8'b10000000 | 8'h01;
+    assign ready = count == '1;
+    counter #(10) redctr (clk, 1'b0, 1'b1, count);
 
     spimaster #(6) TALKER (.clk(clk), .enable(1'b1), .reset(1'b0), .MISO(MISO), .ready(ready), .address(addy), .writedata(8'd0), 
 
