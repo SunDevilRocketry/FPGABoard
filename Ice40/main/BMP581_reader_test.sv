@@ -1,5 +1,7 @@
 module BMP581_reader_test (input wire MISO, output wire MOSI, SCLK, NCS, led_green, led_blue, led_red);
 
+    /* verilator lint_off PINMISSING */
+
     //Lattice premade OSC block connected to clk, think this is like 48MHz?
     wire clk;
     SB_HFOSC HIGH_FREQ_OSC (.CLKHFPU(1'b1), .CLKHFEN(1'b1), .CLKHF(clk));

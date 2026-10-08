@@ -18,7 +18,6 @@ point land in the center of each bit. From there, it samples every 16 ticks (one
 full bit period) to read out the 8 data bits, LSB first, matching how TX sent
 them. Finally, it samples where the stop bit should be to close out the frame.
 */ 
-*/
 module RX #(samples=16) (input rst, tick, rx_serial, output logic [7:0] rx_data, output logic rx_valid
 //for testing
 //, output logic [1:0] state, output logic [4:0] cSamples, output logic [3:0] count8
