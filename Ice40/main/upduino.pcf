@@ -28,10 +28,10 @@ set_io -nowarn gpio_31 31
 set_io -nowarn gpio_37 37
 set_io -nowarn gpio_34 34
 set_io -nowarn gpio_43 43
-set_io -nowarn gpio_36 36
-set_io -nowarn gpio_42 42
-set_io -nowarn gpio_38 38
-set_io -nowarn gpio_28 28
+set_io -nowarn NCS_MCU 36
+set_io -nowarn MOSI_MCU 42
+set_io -nowarn MISO_MCU 38 
+set_io -nowarn SCLK_MCU 28
 
 # Normal GPIO pins, right side
 
@@ -57,7 +57,7 @@ set_io -nowarn gpio_44 44
 set_io -nowarn gpio_4 4
 set_io -nowarn gpio_3 3
 set_io -nowarn gpio_48 48
-set_io -nowarn gpio_45 45
-set_io -nowarn gpio_47 47
-set_io -nowarn gpio_46 46
-set_io -nowarn gpio_2 2
+set_io -nowarn SCLK_CHIP 45
+set_io -nowarn MOSI_CHIP 47
+set_io -nowarn MISO_CHIP 46
+set_io -nowarn NCS_CHIP 2
