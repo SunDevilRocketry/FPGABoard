@@ -1,0 +1,19 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Flash STM32 (CubeProgrammer)",
+            "type": "shell",
+            "command": "STM32_Programmer_CLI",
+            "args": [
+                "-c", "port=SWD",
+                "-w", "${workspaceFolder}/build/Debug/G474Demo.elf",
+                "-v",
+                "-rst"
+            ],
+            "problemMatcher": [],
+            "group": "build",
+            "dependsOn": "CMake: build" 
+        }
+    ]
+}
