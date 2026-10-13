@@ -4,7 +4,7 @@
 // ======================================================================================= // 
 
 `timescale 1ns/1ps
-module qspi_master_tb;
+module qspi_master_tb();
     localparam logic [1:0] OP_TX = 2'b00;
     localparam logic [1:0] OP_RX = 2'b01;
     localparam logic [1:0] OP_DUMMY = 2'b10;
@@ -32,4 +32,5 @@ module qspi_master_tb;
     );
 
     // i need a moment to think about this 
-    
+
+endmodule 

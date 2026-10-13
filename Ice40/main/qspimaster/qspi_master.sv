@@ -18,8 +18,8 @@
 // ======================================================================================= // 
 
 module qspi_master #(
-    paramter DIV_W = 8,
-    parameter DRIVE_WP_HOLD = 1'b1,
+    parameter DIV_W = 8,
+    parameter DRIVE_WP_HOLD = 1'b1
 )(
     input logic clk, rst_n,
 
@@ -43,7 +43,7 @@ module qspi_master #(
     output logic sclk, cs_n,
 
     input logic [3:0] io_i,
-    output logic [3:0] io_o, io_oe,
+    output logic [3:0] io_o, io_oe
 );
 
     localparam logic [1:0] OP_TX = 2'b00;
@@ -51,9 +51,9 @@ module qspi_master #(
 
     localparam logic [1:0] OP_DUMMY = 2'b10;
 
-    localparam logic W_X1 = 2'b00;
-    localparam logic W_X2 = 2'b01;
-    localparam logic W_X4 = 2'b10;
+    localparam logic [1:0] W_X1 = 2'b00;
+    localparam logic [1:0] W_X2 = 2'b01;
+    localparam logic [1:0] W_X4 = 2'b10;
 
     // idle pin state: IO0 driven low, IO1 released, IO2/IO3 high (optional)
     localparam logic [3:0] IDLE_O  = 4'b1100;
@@ -65,7 +65,7 @@ module qspi_master #(
 
     // slk timing 
     logic [DIV_W-1:0] div_q, cnt;
-    logic late_q, 
+    logic late_q;
 
     // current command 
     logic last_q;
@@ -79,13 +79,17 @@ module qspi_master #(
 
     // output registers for pins
     logic sclk_q, cs_n_q;
-    logic [3:0] io_o_q, 
+    logic [3:0] io_o_q;
     logic [3:0] io_oe_q; // output enable per IO line, 1=drive, 0=release
 
     // tick when counter reaches zero 
-    logic tick = (cnt == '0);
-    assign cmd_ready = (state == S_IDLE) || (state == S_WAIT); // ready to accept a new command
-    logic accept = cmd_valid && cmd_ready; // new command accepted 
+    logic tick;
+    logic accept;
+    logic shift_en;
+
+    assign tick = (cnt == '0);
+    assign accept = cmd_valid && cmd_ready;
+    assign shift_en = (op_q == OP_TX) || ((op_q == OP_RX) && (w_q == W_X1));
 
     //
     // decode of a new command: initial lane values, shift register, edge count
@@ -98,20 +102,19 @@ module qspi_master #(
     always_comb begin 
         // initialize
         w_n = (cmd_width == 2'b11) ? W_X4 : cmd_width; // treat width=3 as x4
+
         o_n = '0;
         oe_n = '0;
         sr_n = cmd_data;
 
         case ( w_n )
             // IO0 always driven in x1
-            W_X1 : begin 
-
-                o_n[0] =  1'b1;
-                if (cmd_op != OP_DUMMY) begin
+            W_X1 : begin
+                if (cmd_op == OP_TX) begin
+                    oe_n[0] = 1'b1;
                     o_n[0] = cmd_data[7];
                     sr_n = {cmd_data[6:0], 1'b0};
                 end
-
             end
 
             // IO1 and IO0 driven in x2
@@ -145,8 +148,6 @@ module qspi_master #(
         end
     end
 
-    logic shift_en = (op_q == OP_TX) || (op_q == OP_RX && w_q == W_X1);
-
 // 
 // state machine
 //
@@ -161,12 +162,15 @@ always_ff @(posedge clk or negedge rst_n) begin
         w_q <= W_X1;
         tx_sr <= '0;
         rx_sr <= '0;
+        rx_valid <= 1'b0;
+        rx_data <= '0;
         edge_cnt <= '0;
         edge_end <= '0;
         sclk_q <= 1'b0;
         cs_n_q <= 1'b1;
         io_o_q <= IDLE_O;
-    end else begin
+        io_oe_q <= IDLE_OE;
+        end else begin
         // initialize 
         rx_valid <= 1'b0;
 
@@ -174,6 +178,9 @@ always_ff @(posedge clk or negedge rst_n) begin
             cnt <= tick ? div_q : cnt - 1'b1;
 
         case ( state )
+            // S_IDLE: wait for a command, drive idle pin state
+            S_IDLE : begin
+            end
 
             // S_LEAD: start the SCLK clocking, initialize the edge counter
             S_LEAD : if (tick) begin
@@ -220,8 +227,8 @@ always_ff @(posedge clk or negedge rst_n) begin
                     state <= S_TRAIL;
                     // we want to release the x2/x4 lines on the final falling edge
                     // the next OP_TX re-enables them 
-                    if (op_q == OP_TX && w_q = W_X2) io_oe_q[1:0] <= 2'b00;
-                    if (op_q == OP_TX && w_q = W_X4) io_oe_q[3:0] <= 4'b0000;
+                    if (op_q == OP_TX && w_q == W_X2) io_oe_q[1:0] <= 2'b00;
+                    if (op_q == OP_TX && w_q == W_X4) io_oe_q[3:0] <= 4'b0000;
                 end
             end
 

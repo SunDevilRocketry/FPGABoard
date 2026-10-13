@@ -1,10 +1,10 @@
 // qspi_io.sv - generic tri-state pad wrapper for qspi_master
 // use this module in the top level 
 module qspi_io (
-  input  wire logic [3:0] io_o,
-  input  wire logic [3:0] io_oe,
-  output wire logic [3:0] io_i,
-  inout  wire       [3:0] io_pad
+  input logic [3:0] io_o,
+  input logic [3:0] io_oe,
+  output logic [3:0] io_i,
+  inout wire [3:0] io_pad
 );
   genvar g;
   generate
