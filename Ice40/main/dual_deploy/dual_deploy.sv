@@ -50,7 +50,7 @@ module dual_deploy #(
         if (reset)
             deploy <= 1'b0;
         else if (enable)
-            deploy <= accel_near_zero && high_up; // update deploy
+            deploy <= deploy || (accel_near_zero && high_up); // update deploy
       
     end
 
