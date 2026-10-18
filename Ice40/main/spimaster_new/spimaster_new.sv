@@ -58,12 +58,13 @@ module spimaster_new #(
 (   
     input logic clk, reset, 
     input logic start, input logic [6:0] addr,
+    input logic MISO,
 
     output logic busy,
     output logic done, output logic [8*N_BYTES-1:0] rdata, 
     // first byte read will be rdata[8*N_BYTES-1:0 -: 8]
 
-    output logic SCLK, NCS, MOSI, MISO
+    output logic SCLK, NCS, MOSI
 );
 
 // Local Paramters 
@@ -85,7 +86,7 @@ module spimaster_new #(
     localparam int CS_IDLE_CYC = ns2cyc(T_CS_IDLE_NS);
 
     localparam int TOTAL_BITS = 8*(1+N_BYTES);
-    localparam int N_EDGES = TOTAL_BITS;
+    localparam int N_EDGES = 2*TOTAL_BITS;
 
     // counter needs to be wide enough 
     localparam int MAX_WAIT = (CS_IDLE_CYC > CS_SETUP_CYC) ?
@@ -102,7 +103,7 @@ module spimaster_new #(
 
 // Internal Signals
     logic [WAIT_W-1:0] wait_cnt; // counts down in CS_SETUP, XFER, CS_HOLD, CS_IDLE
-    logic [EDGE_2-1:0] edge_cnt; // SCLK toggles done in XFER
+    logic [EDGE_W-1:0] edge_cnt; // SCLK toggles done in XFER
     logic [7:0] tx_sr;           // address byte
     logic [8*N_BYTES-1:0] rx_sr; // read bytes 
     logic miso_q;                // MISO resgister on same clk edge that pulls SCLK high 
@@ -128,14 +129,14 @@ module spimaster_new #(
             sample      <= 1'b0;
         end else begin
             done        <= 1'b0;
-            sampel      <= 1'b0;
+            sample      <= 1'b0;
             miso_q      <= MISO;
 
             // get bit at the rising edge 1 cycle ago 
             // bits from address byte fall off, so after last sample
             // rx_sr holds the N_BYTES read bytes
             if (sample) 
-                rx_sr <= {rx_sr[8*N_BYGTES-2:0], miso_q};
+                rx_sr <= {rx_sr[8*N_BYTES-2:0], miso_q};
 
             unique case (state)
                 // IDLE State
@@ -207,7 +208,21 @@ module spimaster_new #(
                     end
                 end
 
+                // CS_IDLE state
+                CS_IDLE: begin 
+                    NCS <= 1'b1;
+                    SCLK <= CPOL;
+                    MOSI <= 1'b0;
+
+                    if (wait_cnt == 0) begin
+                        state <= IDLE;
+                    end else begin
+                        wait_cnt <= wait_cnt - 1'b1;
+                    end
+                end
+
                 default: state <= IDLE;
+
             endcase
         end
     end
