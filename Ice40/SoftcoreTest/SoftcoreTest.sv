@@ -9,9 +9,11 @@ module SoftcoreTest (
     wire clk;
     wire [2:0] leds;
 
+    /* verilator lint_off PINMISSING */
     SB_HFOSC #(.CLKHF_DIV("0b10")) osc (
         .CLKHFPU(1'b1), .CLKHFEN(1'b1), .CLKHF(clk)
     );
+    /* verilator lint_on PINMISSING */
 
     softcore_soc soc_inst (
         .clk(clk), 
