@@ -60,7 +60,7 @@ module softcore_soc (
     initial begin
         for (i = 0; i < 256; i = i + 1) 
             mem[i] = 32'h0;
-        $readmemh("Firmware/firmware.hex", mem); // xxd -e -g 4 -c 4 led.bin | awk '{print $2}' > firmware.hex
+        $readmemh("Firmware/firmware.hex", mem);
     end
 
     // Address decode [mem_ready one clock after mem_valid]
