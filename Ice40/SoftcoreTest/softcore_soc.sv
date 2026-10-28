@@ -58,12 +58,9 @@ module softcore_soc (
     reg [31:0] mem [0:255];
     integer i;
     initial begin
-        for (i = 0; i < 256; i = i + 1) mem[i] = 32'h0;
-        mem[0] = 32'h800000b7; // lui  x1, 0x80000   (x1 = IO base)
-        mem[1] = 32'h00000113; // addi x2, x0, 0
-        mem[2] = 32'h00110113; // loop: addi x2, x2, 1
-        mem[3] = 32'h0020a023; //       sw   x2, 0(x1)
-        mem[4] = 32'hff9ff06f; //       j    loop
+        for (i = 0; i < 256; i = i + 1) 
+            mem[i] = 32'h0;
+        $readmemh("Firmware/firmware.hex", mem); // xxd -e -g 4 -c 4 led.bin | awk '{print $2}' > firmware.hex
     end
 
     // Address decode [mem_ready one clock after mem_valid]
