@@ -1,4 +1,10 @@
-CROSS   ?= riscv64-unknown-elf-
+PREFIXES := riscv64-unknown-elf- riscv-none-elf- riscv64-elf-
+CROSS ?= $(firstword $(foreach p,$(PREFIXES),$(if $(shell command -v $(p)gcc 2>/dev/null),$(p))))
+
+ifeq ($(CROSS),)
+	$(error No RISC-V toolchain found. Tried: $(PREFIXES))
+endif
+
 CC      = $(CROSS)gcc
 OBJCOPY = $(CROSS)objcopy
 CFLAGS  = -march=rv32ic -mabi=ilp32 -O1 -ffreestanding -nostdlib
