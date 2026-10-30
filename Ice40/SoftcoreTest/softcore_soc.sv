@@ -1,6 +1,8 @@
-// PicoRV32 + 1 KB RAM + LED register
-// 0x0000_0000  RAM (firmware runs from here)
-// bit 31 set   LED register, write only
+// PicoRV32 SoC. Memory map (region = mem_addr[31:28]):
+// 0x0000_0000 - 0x0000_03FF  EBR, 1 KB (CPU starts here)
+// 0x1000_0000 - 0x1001_FFFF  SPRAM, 128 KB (not connected yet)
+// 0x2000_0000 - 0x203F_FFFF  SPI flash, 4 MB (not connected yet)
+// 0x3000_0000 - 0x3000_FFFF  I/O, 64 KB (LEDs at 0x3000_0000, write only)
 module softcore_soc (
     input wire clk, 
     output reg [2:0] leds = 3'b000
@@ -54,7 +56,7 @@ module softcore_soc (
         .trace_valid(), .trace_data()
     );
 
-    // RAM, preloaded with a counter loop that writes to the LEDs
+    // EBR, preloaded with Firmware/firmware.hex
     reg [31:0] mem [0:255];
     integer i;
     initial begin
@@ -63,23 +65,42 @@ module softcore_soc (
         $readmemh("Firmware/firmware.hex", mem);
     end
 
-    // Address decode [mem_ready one clock after mem_valid]
-    wire is_io  = mem_addr[31];
-
+    // Address Decode (Top 4 bits pick the region). mem_ready one clock after mem_valid
     always @(posedge clk) begin
         mem_ready <= 0;
         if (mem_valid && !mem_ready) begin
             mem_ready <= 1;
-            if (is_io) begin
-                if (|mem_wstrb) leds <= mem_wdata[22:20]; // slow enough to see
-                mem_rdata <= 32'h0;
-            end else begin
-                mem_rdata <= mem[mem_addr[9:2]];
-                if (mem_wstrb[0]) mem[mem_addr[9:2]][ 7: 0] <= mem_wdata[ 7: 0];
-                if (mem_wstrb[1]) mem[mem_addr[9:2]][15: 8] <= mem_wdata[15: 8];
-                if (mem_wstrb[2]) mem[mem_addr[9:2]][23:16] <= mem_wdata[23:16];
-                if (mem_wstrb[3]) mem[mem_addr[9:2]][31:24] <= mem_wdata[31:24];
-            end
+            case(mem_addr[31:28])
+                4'h0: begin
+                    // EBR. Only bits 9:2 used, so the 1 KB repeats through the region
+                    mem_rdata <= mem[mem_addr[9:2]];
+                    if (mem_wstrb[0]) mem[mem_addr[9:2]][ 7: 0] <= mem_wdata[ 7: 0];    // one strobe per byte
+                    if (mem_wstrb[1]) mem[mem_addr[9:2]][15: 8] <= mem_wdata[15: 8]; 
+                    if (mem_wstrb[2]) mem[mem_addr[9:2]][23:16] <= mem_wdata[23:16];  
+                    if (mem_wstrb[3]) mem[mem_addr[9:2]][31:24] <= mem_wdata[31:24];
+                end
+
+                4'h1: begin
+                    // SPRAM goes here
+                    mem_rdata <= 32'h0000_0000;
+                end
+
+                4'h2: begin
+                    // Flash (spimemio) goes here
+                    mem_rdata <= 32'h0000_0000;
+                end
+
+                4'h3: begin
+                    // I/O. LEDs take bits 22:20 so changes are slow per scale w/ counter
+                    mem_rdata <= 32'h0000_0000;
+                    if (|mem_wstrb) leds <= mem_wdata[22:20];
+                end
+
+                default: begin
+                    // Unmapped.
+                    mem_rdata <= 32'h0000_0000;
+                end
+            endcase
         end
         if (!resetn) mem_ready <= 0;
     end
