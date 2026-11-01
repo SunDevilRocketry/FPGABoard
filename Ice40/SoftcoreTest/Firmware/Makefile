@@ -9,16 +9,27 @@ CC      = $(CROSS)gcc
 OBJCOPY = $(CROSS)objcopy
 CFLAGS  = -march=rv32ic -mabi=ilp32 -O1 -ffreestanding -nostdlib
 
-all: firmware.hex
+all: firmware.hex ../flash_text.hex
+
+# Bootloader (EBR image, baked into the bitstream)
+firmware.elf: start.S boot.c sections.ld
+	$(CC) $(CFLAGS) -T sections.ld start.S boot.c -o firmware.elf
 
 firmware.bin: firmware.elf
 	$(OBJCOPY) -O binary firmware.elf firmware.bin
 
-firmware.elf: start.S main.c sections.ld
-	$(CC) $(CFLAGS) -T sections.ld start.S main.c -o firmware.elf
-
 firmware.hex: firmware.bin
 	xxd -e -g 4 -c 4 firmware.bin | awk '{print $$2}' > firmware.hex
 
+# App (Runs from SPRAM, loaded into the fake flash @ the 1 MB offset)
+app/app.elf: app/start.S app/main.c app/app.ld
+	$(CC) $(CFLAGS) -T app/app.ld app/start.S app/main.c -o app/app.elf
+
+app/app.bin: app/app.elf
+	$(OBJCOPY) -O binary app/app.elf app/app.bin
+
+../flash_text.hex: app/app.bin
+	{ echo @100000; xxd -p -c 1 app/app.bin; } > ../flash_text.hex
+
 clean:
-	rm -f *.o *.elf *.bin
+	rm -f *.o *.elf *.bin app/*.elf app/*.bin

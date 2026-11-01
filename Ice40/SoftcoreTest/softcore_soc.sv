@@ -1,7 +1,7 @@
 // PicoRV32 SoC. Memory map (region = mem_addr[31:28]):
 // 0x0000_0000 - 0x0000_03FF  EBR, 1 KB (CPU starts here)
 // 0x1000_0000 - 0x1001_FFFF  SPRAM, 128 KB
-// 0x2000_0000 - 0x203F_FFFF  SPI flash, 4 MB (not connected yet)
+// 0x2000_0000 - 0x203F_FFFF  SPI flash, 4 MB
 // 0x3000_0000 - 0x3000_FFFF  I/O, 64 KB (LEDs at 0x3000_0000, write only)
 module softcore_soc (
     input wire clk, spi_miso,
@@ -163,7 +163,7 @@ module softcore_soc (
                 end
 
                 4'h2: begin
-                    // Flash (spimemio) goes here** not rn lol
+                    // Unused (flash answers through flash_ready / flash_rdata)
                     bus_rdata <= 32'h0000_0000;
                 end
 
