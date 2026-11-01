@@ -12,6 +12,10 @@ module softcore_soc_tb;
 
     initial begin
         $dumpvars(0, softcore_soc_tb); #6000;
-        $finish;
+        $finish;   
     end
+
+    always @(posedge clk)
+        if (dut.mem_valid && dut.mem_ready && |dut.mem_wstrb)
+            $display("store addr=%h data=%h", dut.mem_addr, dut.mem_wdata);
 endmodule

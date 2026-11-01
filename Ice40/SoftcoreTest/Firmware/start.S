@@ -1,7 +1,7 @@
 .section .text.start
 .global _start
 _start:
-    li sp, 0x10010000
+    li sp, 0x10020000
     call main
     j hang
 

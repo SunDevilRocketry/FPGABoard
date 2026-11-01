@@ -1,6 +1,6 @@
 // PicoRV32 SoC. Memory map (region = mem_addr[31:28]):
 // 0x0000_0000 - 0x0000_03FF  EBR, 1 KB (CPU starts here)
-// 0x1000_0000 - 0x1000_FFFF  SPRAM, 64 KB
+// 0x1000_0000 - 0x1001_FFFF  SPRAM, 128 KB
 // 0x2000_0000 - 0x203F_FFFF  SPI flash, 4 MB (not connected yet)
 // 0x3000_0000 - 0x3000_FFFF  I/O, 64 KB (LEDs at 0x3000_0000, write only)
 module softcore_soc (
@@ -16,38 +16,69 @@ module softcore_soc (
     end
 
     // One bus for both instruction fetches and data. Choosen: RV32IC 
-    wire        mem_valid, mem_instr, trap, spram_sel;
+    wire        mem_valid, mem_instr, trap, spram_sel, spram_sel0, spram_sel1;
     wire [3:0]  mem_wstrb;
-    wire [31:0] mem_addr, mem_wdata, mem_rdata, spram_rdata;
+    wire [31:0] mem_addr, mem_wdata, mem_rdata, spram_rdata, spram0_rdata, spram1_rdata;
     reg         mem_ready;
     reg  [31:0] bus_rdata;
 
+    assign spram_rdata = (mem_addr[16] == 1'b1) ? spram1_rdata : spram0_rdata;
     assign spram_sel = (mem_valid && !mem_ready && mem_addr[31:28] == 4'h1);
+    assign spram_sel0 = (spram_sel && mem_addr[16] == 1'b0);
+    assign spram_sel1 = (spram_sel && mem_addr[16] == 1'b1);
 
-    SB_SPRAM256KA spram_lo (
+    assign mem_rdata = (mem_addr[31:28] == 4'h1) ? spram_rdata : bus_rdata;
+
+    SB_SPRAM256KA spram0_lo (
         .ADDRESS(mem_addr[15:2]),
         .DATAIN(mem_wdata[15:0]),
         .MASKWREN({mem_wstrb[1], mem_wstrb[1], mem_wstrb[0], mem_wstrb[0]}),
         .WREN(|mem_wstrb),
-        .CHIPSELECT(spram_sel),
+        .CHIPSELECT(spram_sel0),
         .CLOCK(clk),
         .STANDBY(1'b0),
         .SLEEP(1'b0),
         .POWEROFF(1'b1),
-        .DATAOUT(spram_rdata[15:0])
+        .DATAOUT(spram0_rdata[15:0])
     );
 
-    SB_SPRAM256KA spram_hi (
+    SB_SPRAM256KA spram0_hi (
         .ADDRESS(mem_addr[15:2]),
         .DATAIN(mem_wdata[31:16]),
         .MASKWREN({mem_wstrb[3], mem_wstrb[3], mem_wstrb[2], mem_wstrb[2]}),
         .WREN(|mem_wstrb),
-        .CHIPSELECT(spram_sel),
+        .CHIPSELECT(spram_sel0),
         .CLOCK(clk),
         .STANDBY(1'b0),
         .SLEEP(1'b0),
         .POWEROFF(1'b1),
-        .DATAOUT(spram_rdata[31:16])
+        .DATAOUT(spram0_rdata[31:16])
+    );
+
+    SB_SPRAM256KA spram1_lo (
+        .ADDRESS(mem_addr[15:2]),
+        .DATAIN(mem_wdata[15:0]),
+        .MASKWREN({mem_wstrb[1], mem_wstrb[1], mem_wstrb[0], mem_wstrb[0]}),
+        .WREN(|mem_wstrb),
+        .CHIPSELECT(spram_sel1),
+        .CLOCK(clk),
+        .STANDBY(1'b0),
+        .SLEEP(1'b0),
+        .POWEROFF(1'b1),
+        .DATAOUT(spram1_rdata[15:0])
+    );
+
+    SB_SPRAM256KA spram1_hi (
+        .ADDRESS(mem_addr[15:2]),
+        .DATAIN(mem_wdata[31:16]),
+        .MASKWREN({mem_wstrb[3], mem_wstrb[3], mem_wstrb[2], mem_wstrb[2]}),
+        .WREN(|mem_wstrb),
+        .CHIPSELECT(spram_sel1),
+        .CLOCK(clk),
+        .STANDBY(1'b0),
+        .SLEEP(1'b0),
+        .POWEROFF(1'b1),
+        .DATAOUT(spram1_rdata[31:16])
     );
 
     picorv32 #(
@@ -133,6 +164,5 @@ module softcore_soc (
         if (!resetn) mem_ready <= 0;
     end
 
-    assign mem_rdata = (mem_addr[31:28] == 4'h1) ? spram_rdata : bus_rdata;
 
 endmodule
