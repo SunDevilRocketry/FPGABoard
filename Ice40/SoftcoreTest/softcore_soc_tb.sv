@@ -9,7 +9,16 @@ module softcore_soc_tb;
     wire cs;
     wire sck;
     wire mosi;
-    reg miso = 1'b0;
+    wire miso;
+
+    spiflash flash (
+        .csb(cs),
+        .clk(sck),
+        .io0(mosi),
+        .io1(miso),
+        .io2(),
+        .io3()
+    );
 
     softcore_soc dut(
         .clk(clk),
@@ -23,7 +32,7 @@ module softcore_soc_tb;
     always #5 clk = ~clk; // 100 MHz, not 12.
 
     initial begin
-        $dumpvars(0, softcore_soc_tb); #6000;
+        $dumpvars(0, softcore_soc_tb); #30000;
         $finish;   
     end
 

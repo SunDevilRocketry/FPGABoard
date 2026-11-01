@@ -17,12 +17,12 @@ module softcore_soc (
     end
 
     // One bus for both instruction fetches and data. Choosen: RV32IC 
-    wire        mem_valid, mem_instr, trap, spram_sel, spram_sel0, spram_sel1;
+    wire        mem_ready, mem_valid, mem_instr, trap, spram_sel, spram_sel0, spram_sel1;
     wire        flash_valid, flash_ready;
     wire [3:0]  mem_wstrb;
     wire [31:0] mem_addr, mem_wdata, mem_rdata, spram_rdata, spram0_rdata, spram1_rdata;
     wire [31:0] flash_rdata;
-    reg         mem_ready;
+    reg         bus_ready;
     reg  [31:0] bus_rdata;
 
     assign spram_rdata = (mem_addr[16] == 1'b1) ? spram1_rdata : spram0_rdata;
@@ -30,7 +30,7 @@ module softcore_soc (
     assign spram_sel0 = (spram_sel && mem_addr[16] == 1'b0);
     assign spram_sel1 = (spram_sel && mem_addr[16] == 1'b1);
 
-    assign mem_rdata = (mem_addr[31:28] == 4'h1) ? spram_rdata : bus_rdata;
+    assign mem_rdata = (mem_addr[31:28] == 4'h1) ? spram_rdata : (mem_addr[31:28] == 4'h2) ? flash_rdata: bus_rdata;
 
     assign flash_valid = (mem_addr[31:28] == 4'h2 && mem_valid);
 
@@ -142,11 +142,11 @@ module softcore_soc (
         $readmemh("Firmware/firmware.hex", mem);
     end
 
-    // Address Decode (Top 4 bits pick the region). mem_ready one clock after mem_valid
+    // Address Decode (Top 4 bits pick the region). One clock for EBR/SPRAM/I/O, but flash answers via flash_ready
     always @(posedge clk) begin
-        mem_ready <= 0;
-        if (mem_valid && !mem_ready) begin
-            mem_ready <= 1;
+        bus_ready <= 0;
+        if (mem_valid && !bus_ready && mem_addr[31:28] != 4'h2) begin
+            bus_ready <= 1;
             case(mem_addr[31:28])
                 4'h0: begin
                     // EBR. Only bits 9:2 used, so the 1 KB repeats through the region
@@ -163,7 +163,7 @@ module softcore_soc (
                 end
 
                 4'h2: begin
-                    // Flash (spimemio) goes here
+                    // Flash (spimemio) goes here** not rn lol
                     bus_rdata <= 32'h0000_0000;
                 end
 
@@ -179,8 +179,11 @@ module softcore_soc (
                 end
             endcase
         end
-        if (!resetn) mem_ready <= 0;
+        if (!resetn) bus_ready <= 1'b0;
     end
+
+    assign mem_ready = (mem_addr[31:28] == 4'h2) ? flash_ready : bus_ready;
+
 
 
 endmodule
