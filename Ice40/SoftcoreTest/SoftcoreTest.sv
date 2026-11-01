@@ -1,4 +1,4 @@
-// Board wrapper. Only place for SB_ primitives so softcore_soc can be simulated.
+// Board wrapper. Only place for SB_ primitives (w/ no sim model) so softcore_soc can be simulated.
 module SoftcoreTest (
     output wire led_red,
     output wire led_green,
