@@ -15,8 +15,9 @@ all: firmware.hex ../flash_text.hex
 firmware.elf: start.S boot.c sections.ld
 	$(CC) $(CFLAGS) -T sections.ld start.S boot.c -o firmware.elf
 
+# Padded manually [mem[i] = 32'h0]
 firmware.bin: firmware.elf
-	$(OBJCOPY) -O binary firmware.elf firmware.bin
+	$(OBJCOPY) -O binary --pad-to 0x400 firmware.elf firmware.bin
 
 firmware.hex: firmware.bin
 	xxd -e -g 4 -c 4 firmware.bin | awk '{print $$2}' > firmware.hex

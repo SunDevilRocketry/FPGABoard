@@ -15,6 +15,5 @@ int main(void){
         *ram0 = n;
         *ram1 = ~n;
         *leds = *ram0;
-        *leds = *ram1;
     }
 }

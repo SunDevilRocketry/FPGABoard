@@ -7,8 +7,7 @@ MEMORY {
 SECTIONS {
     .text   : { *(.text.header) *(.text.start) *(.text*) } > SPRAM
     .rodata : { *(.rodata*) *(.srodata*) } > SPRAM
-    .data   : { *(.data*) *(.sdata*) } > SPRAM
-    . = ALIGN(4);
+    .data   : { *(.data*) *(.sdata*) . = ALIGN(4); } > SPRAM
     _image_end = .;
     .bss    : { _bss_start = .; *(.sbss*) *(.bss*) *(COMMON) . = ALIGN(4); _bss_end = .; } > SPRAM
 }

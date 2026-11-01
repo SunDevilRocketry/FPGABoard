@@ -16,7 +16,7 @@ module softcore_soc (
             rst_cnt <= rst_cnt + 1;
     end
 
-    // One bus for both instruction fetches and data. Choosen: RV32IC 
+    // One bus for both instruction fetches and data. Chosen: RV32IC 
     wire        mem_ready, mem_valid, mem_instr, trap, spram_sel, spram_sel0, spram_sel1;
     wire        flash_valid, flash_ready;
     wire [3:0]  mem_wstrb;
@@ -89,7 +89,7 @@ module softcore_soc (
     spimemio flash(
         .clk(clk), .resetn(resetn),
         .valid(flash_valid), .ready(flash_ready), .rdata(flash_rdata),
-        .addr(mem_addr[23:0]), // Aliasing
+        .addr(mem_addr[23:0]), // 24-bit flash address (4MB repeats window [aliasing])
         .flash_csb(spi_ssn), .flash_clk(spi_sck),
         .flash_io0_do(spi_mosi),
         .flash_io1_di(spi_miso),
@@ -135,10 +135,7 @@ module softcore_soc (
 
     // EBR, preloaded with Firmware/firmware.hex
     reg [31:0] mem [0:255];
-    integer i;
     initial begin
-        for (i = 0; i < 256; i = i + 1) 
-            mem[i] = 32'h0;
         $readmemh("Firmware/firmware.hex", mem);
     end
 
@@ -157,24 +154,15 @@ module softcore_soc (
                     if (mem_wstrb[3]) mem[mem_addr[9:2]][31:24] <= mem_wdata[31:24];
                 end
 
-                4'h1: begin
-                    // SPRAM goes here
-                    bus_rdata <= 32'h0000_0000;
-                end
-
-                4'h2: begin
-                    // Unused (flash answers through flash_ready / flash_rdata)
-                    bus_rdata <= 32'h0000_0000;
-                end
-
                 4'h3: begin
-                    // I/O. LEDs take bits 22:20 so changes are slow per scale w/ counter
+                    // I/O. LEDs take bits 22:20 so changes are slow (to be seen).
                     bus_rdata <= 32'h0000_0000;
                     if (|mem_wstrb) leds <= mem_wdata[22:20];
                 end
 
                 default: begin
-                    // Unmapped.
+                    // 4-F Unmapped (prevent CPU hang)
+                    // SPRAM & flash thro' muxes.
                     bus_rdata <= 32'h0000_0000;
                 end
             endcase
