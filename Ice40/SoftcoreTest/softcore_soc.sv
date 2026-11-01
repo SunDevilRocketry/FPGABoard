@@ -20,7 +20,11 @@ module softcore_soc (
     reg         mem_ready;
     wire [31:0] mem_addr, mem_wdata;
     wire [3:0]  mem_wstrb;
-    reg  [31:0] mem_rdata;
+    reg  [31:0] bus_rdata;
+    wire [31:0] mem_rdata;
+    wire [31:0] spram_rdata;
+
+    assign spram_rdata = 32'h0;
 
     picorv32 #(
         .ENABLE_COUNTERS        (0),
@@ -73,7 +77,7 @@ module softcore_soc (
             case(mem_addr[31:28])
                 4'h0: begin
                     // EBR. Only bits 9:2 used, so the 1 KB repeats through the region
-                    mem_rdata <= mem[mem_addr[9:2]];
+                    bus_rdata <= mem[mem_addr[9:2]];
                     if (mem_wstrb[0]) mem[mem_addr[9:2]][ 7: 0] <= mem_wdata[ 7: 0];    // one strobe per byte
                     if (mem_wstrb[1]) mem[mem_addr[9:2]][15: 8] <= mem_wdata[15: 8]; 
                     if (mem_wstrb[2]) mem[mem_addr[9:2]][23:16] <= mem_wdata[23:16];  
@@ -82,27 +86,29 @@ module softcore_soc (
 
                 4'h1: begin
                     // SPRAM goes here
-                    mem_rdata <= 32'h0000_0000;
+                    bus_rdata <= 32'h0000_0000;
                 end
 
                 4'h2: begin
                     // Flash (spimemio) goes here
-                    mem_rdata <= 32'h0000_0000;
+                    bus_rdata <= 32'h0000_0000;
                 end
 
                 4'h3: begin
                     // I/O. LEDs take bits 22:20 so changes are slow per scale w/ counter
-                    mem_rdata <= 32'h0000_0000;
+                    bus_rdata <= 32'h0000_0000;
                     if (|mem_wstrb) leds <= mem_wdata[22:20];
                 end
 
                 default: begin
                     // Unmapped.
-                    mem_rdata <= 32'h0000_0000;
+                    bus_rdata <= 32'h0000_0000;
                 end
             endcase
         end
         if (!resetn) mem_ready <= 0;
     end
+
+    assign mem_rdata = (mem_addr[31:28] == 4'h1) ? spram_rdata : bus_rdata;
 
 endmodule

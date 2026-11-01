@@ -11,7 +11,7 @@ module softcore_soc_tb;
     always #5 clk = ~clk; // 100 MHz, not 12.
 
     initial begin
-        $dumpvars(0, softcore_soc_tb); #3000;
+        $dumpvars(0, softcore_soc_tb); #6000;
         $finish;
     end
 endmodule
