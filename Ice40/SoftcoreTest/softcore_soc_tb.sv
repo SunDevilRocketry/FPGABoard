@@ -6,7 +6,19 @@ module softcore_soc_tb;
     wire [2:0] leds;
     reg clk = 1'b0;
 
-    softcore_soc dut(.clk(clk), .leds(leds));
+    wire cs;
+    wire sck;
+    wire mosi;
+    reg miso = 1'b0;
+
+    softcore_soc dut(
+        .clk(clk),
+        .leds(leds),
+        .spi_ssn(cs),
+        .spi_sck(sck),
+        .spi_mosi(mosi),
+        .spi_miso(miso)
+        );
 
     always #5 clk = ~clk; // 100 MHz, not 12.
 

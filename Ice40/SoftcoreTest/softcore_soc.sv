@@ -4,7 +4,8 @@
 // 0x2000_0000 - 0x203F_FFFF  SPI flash, 4 MB (not connected yet)
 // 0x3000_0000 - 0x3000_FFFF  I/O, 64 KB (LEDs at 0x3000_0000, write only)
 module softcore_soc (
-    input wire clk, 
+    input wire clk, spi_miso,
+    output wire spi_sck, spi_ssn, spi_mosi,
     output reg [2:0] leds = 3'b000
 );
     // Hold CPU in reset for 255 cycles after power-up
@@ -17,8 +18,10 @@ module softcore_soc (
 
     // One bus for both instruction fetches and data. Choosen: RV32IC 
     wire        mem_valid, mem_instr, trap, spram_sel, spram_sel0, spram_sel1;
+    wire        flash_valid, flash_ready;
     wire [3:0]  mem_wstrb;
     wire [31:0] mem_addr, mem_wdata, mem_rdata, spram_rdata, spram0_rdata, spram1_rdata;
+    wire [31:0] flash_rdata;
     reg         mem_ready;
     reg  [31:0] bus_rdata;
 
@@ -28,6 +31,8 @@ module softcore_soc (
     assign spram_sel1 = (spram_sel && mem_addr[16] == 1'b1);
 
     assign mem_rdata = (mem_addr[31:28] == 4'h1) ? spram_rdata : bus_rdata;
+
+    assign flash_valid = (mem_addr[31:28] == 4'h2 && mem_valid);
 
     SB_SPRAM256KA spram0_lo (
         .ADDRESS(mem_addr[15:2]),
@@ -79,6 +84,19 @@ module softcore_soc (
         .SLEEP(1'b0),
         .POWEROFF(1'b1),
         .DATAOUT(spram1_rdata[31:16])
+    );
+
+    spimemio flash(
+        .clk(clk), .resetn(resetn),
+        .valid(flash_valid), .ready(flash_ready), .rdata(flash_rdata),
+        .addr(mem_addr[23:0]), // Aliasing
+        .flash_csb(spi_ssn), .flash_clk(spi_sck),
+        .flash_io0_do(spi_mosi),
+        .flash_io1_di(spi_miso),
+        .flash_io0_di(1'b0), .flash_io2_di(1'b0), .flash_io3_di(1'b0), 
+        .flash_io0_oe(), .flash_io1_oe(), .flash_io2_oe(), .flash_io3_oe(),
+        .flash_io1_do(), .flash_io2_do(), .flash_io3_do(),
+        .cfgreg_we(4'b0), .cfgreg_di(32'h0), .cfgreg_do()
     );
 
     picorv32 #(
