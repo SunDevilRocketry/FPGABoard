@@ -1,4 +1,8 @@
-module flight_state_machine(
+
+
+//TODO: HOW TO MEASURE CONTINUITY
+  // need to confirm board clock
+module flight_state_machine #(parameter int CLK_HZ = 12_000_000 )(
   input logic clk,
   input logic reset,
 
@@ -16,17 +20,6 @@ module flight_state_machine(
 );
 
 
-
-//TODO: HOW TO MEASURE CONTINUITY
-
-// IDEA:
-//• Your high-current deployment battery
-// connects to one side of the e-match. 
-//The other side of the e-match goes to a high-power 
-//switching element (like an N-channel MOSFET)
-// controlled by the FPGA.
-
-localparam int APOGEE_WAIT = 24_000_000 ;
 
 typedef enum logic [2:0]  {
   IDLE, LAUNCH, COAST, APOGEE, DESCENT, LANDED
@@ -47,6 +40,99 @@ always_ff @(posedge clk or posedge reset) begin
 
 end
 
+//timing
+
+localparam int SAMPLE_CYCLES = CLK_HZ / 20;  // velocity sample every 50 ms
+
+// thresholds
+localparam int ONE_G = 2048;  //  (±16 g range)
+localparam int LAUNCH_ACC= 2 * ONE_G;  // > 2 G   
+localparam int BURNOUT_ACC = 0;   // < 0< G
+localparam int PA_PER_FT  = 3;   
+localparam int LAUNCH_ALT_P = 50 * PA_PER_FT * 64;  // > 50 ft above pad 
+localparam int VEL_TOL = 1 * PA_PER_FT * 64;   
+
+localparam int HOLD_CYCLES  = CLK_HZ / 5; // 0.2 s
+localparam int LAND_CYCLES  = CLK_HZ * 5;    
+
+// sample_tick pulses for 1 clock every 50 ms
+logic [19:0] sample_count;
+logic sample_tick;
+
+always_ff @(posedge clk or posedge reset) begin
+  if (reset)
+    sample_count <= '0;
+  else if (sample_count == SAMPLE_CYCLES-1) 
+    sample_count <= '0;
+  else     
+    sample_count <= sample_count + 1'b1;
+end
+
+
+assign sample_tick = (sample_count == SAMPLE_CYCLES-1);
+
+// pad pressure tracks while in idle and freezes once launched
+logic [23:0] pad_pressure;
+
+always_ff @(posedge clk or posedge reset) begin
+  if (reset)             
+    pad_pressure <= '0;
+ else if (state == IDLE && accel_z <= LAUNCH_ACC) 
+    pad_pressure <= pressure;
+end
+
+// altitude above pad (positive = higher)
+logic signed [24:0] alt_p;
+assign alt_p = $signed({1'b0, pad_pressure}) - $signed({1'b0, pressure});
+
+
+//(positive = going up)
+logic [23:0] prev_pressure;
+logic signed [24:0] vel_p;
+
+always_ff @(posedge clk or posedge reset) begin
+  if (reset) begin
+    prev_pressure <= '0;
+    vel_p         <= '0;
+  end else if (sample_tick) begin
+    vel_p         <= $signed({1'b0, prev_pressure}) - $signed({1'b0, pressure});
+    prev_pressure <= pressure;
+  end
+end
+
+      
+
+// conditions
+logic launch_cond, burnout_cond, apogee_cond, landed_cond;
+
+assign launch_cond  = (accel_z > LAUNCH_ACC) && (alt_p > LAUNCH_ALT_P);
+assign burnout_cond = (accel_z < BURNOUT_ACC) && (vel_p > VEL_TOL);   // decelerating but still rising
+assign apogee_cond  = (vel_p < -VEL_TOL);   // coming down
+assign landed_cond  = (vel_p > -VEL_TOL) && (vel_p < VEL_TOL);  // not moving
+
+
+// each counts only in  own state and resets whent condition fails
+logic [26:0] launch_cnt, burnout_cnt, apogee_cnt, landed_cnt;
+
+always_ff @(posedge clk or posedge reset) begin
+  if (reset) begin
+    launch_cnt  <= '0;
+    burnout_cnt <= '0;
+    apogee_cnt  <= '0;
+    landed_cnt  <= '0;
+  end else begin
+    launch_cnt  <= (state == IDLE    && launch_cond)  ? launch_cnt  + 1'b1 : '0;
+    burnout_cnt <= (state == LAUNCH  && burnout_cond) ? burnout_cnt + 1'b1 : '0;
+    apogee_cnt  <= (state == COAST   && apogee_cond)  ? apogee_cnt  + 1'b1 : '0;
+    landed_cnt  <= (state == DESCENT && landed_cond)  ? landed_cnt  + 1'b1 : '0;
+  end
+end
+
+assign launch_detected  = (launch_cnt  >= HOLD_CYCLES);
+assign burnout_detected = (burnout_cnt >= HOLD_CYCLES);
+assign apogee_detected  = (apogee_cnt  >= HOLD_CYCLES);
+assign landed_detected  = (landed_cnt  >= LAND_CYCLES);
+
 //transitions
  always_comb begin
   next_state = state; // defaults to stay in current state
@@ -65,11 +151,10 @@ end
       if (deploy_confirmed) next_state = DESCENT;
 
     DESCENT:
-      if (landed_detected) next_state = LANDED
+      if (landed_detected) next_state = LANDED;
       
-;
     LANDED: 
-      next_state = IDLE;
+      next_state = LANDED;
 
     default: next_state = IDLE;
 
@@ -109,7 +194,7 @@ endmodule
 
     //LAUNCH: 
     //passthrough_en: 0
-    //record_en = 0
+    //record_en = 1
     // dd_en = 0
     // deploy = 0;
 
@@ -138,5 +223,3 @@ endmodule
 
 
   // PASSTHROUGH, n QSPI, 
-
-)
