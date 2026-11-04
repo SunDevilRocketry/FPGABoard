@@ -2,10 +2,10 @@ module flight_state_machine(
   input logic clk,
   input logic reset,
 
-
   // sensors:
   input logic signed [15:0] accel_x, accel_y, accel_z,
-  input logic [23:0] pressure;
+  input logic [23:0] pressure,
+  input logic deploy_confirmed,
 
   //enables:
   output logic passthrough_en,
@@ -18,7 +18,13 @@ module flight_state_machine(
 
 
 //TODO: HOW TO MEASURE CONTINUITY
-input logic deploy_confirmed;
+
+// IDEA:
+//• Your high-current deployment battery
+// connects to one side of the e-match. 
+//The other side of the e-match goes to a high-power 
+//switching element (like an N-channel MOSFET)
+// controlled by the FPGA.
 
 localparam int APOGEE_WAIT = 24_000_000 ;
 
@@ -56,14 +62,16 @@ end
       if (apogee_detected) next_state = APOGEE;
 
     APOGEE:
-      if (deploy_confirmed) nextstate = DESCENT;
+      if (deploy_confirmed) next_state = DESCENT;
 
     DESCENT:
-      if (landed_detected) next_state = LANDED;\
+      if (landed_detected) next_state = LANDED
       
-
+;
     LANDED: 
       next_state = IDLE;
+
+    default: next_state = IDLE;
 
   endcase
  end
@@ -78,7 +86,7 @@ end
 
     dd_en = (state == COAST) || (state == APOGEE);
 
- end;
+ end
 
  // deploy: latched high once apogee is reached
 
