@@ -2,7 +2,7 @@
 // 0x0000_0000 - 0x0000_03FF  EBR, 1 KB (CPU starts here)
 // 0x1000_0000 - 0x1001_FFFF  SPRAM, 128 KB
 // 0x2000_0000 - 0x203F_FFFF  SPI flash, 4 MB
-// 0x3000_0000 - 0x3000_FFFF  I/O, 64 KB (LEDs at 0x3000_0000, write only)
+// 0x3000_0000 - 0x3000_FFFF  I/O, 4 KB slots
 module softcore_soc (
     input wire clk, spi_miso,
     output wire spi_sck, spi_ssn, spi_mosi,
@@ -157,7 +157,12 @@ module softcore_soc (
                 4'h3: begin
                     // I/O. LEDs take bits 22:20 so changes are slow (to be seen).
                     bus_rdata <= 32'h0000_0000;
-                    if (|mem_wstrb) leds <= mem_wdata[22:20];
+                    case(mem_addr[15:12])
+                        4'h0:       // (slot 0: LEDs, write only)
+                            if (|mem_wstrb) leds <= mem_wdata[22:20];
+                        default:;    // (slot 1-15: Unwritten)
+                    endcase
+                    
                 end
 
                 default: begin
