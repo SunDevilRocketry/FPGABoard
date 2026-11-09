@@ -65,9 +65,8 @@ input logic exp_pt, input logic exp_rec,input logic exp_dd, input logic exp_dep)
 
   
   initial begin
-    $dumpfile("flight_state_machine_tb.vcd");
-    $dumpvars(0, flight_state_machine_tb);
-//: 1 G up, steady pressure
+   
+// 1 G up, steady pressure
     accel_x = 0; accel_y = 0; accel_z = G1;
     pressure = PAD_P;
     deploy_confirmed = 1'b0;
