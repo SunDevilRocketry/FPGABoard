@@ -3,8 +3,8 @@ module SoftcoreTest (
     output wire led_red,
     output wire led_green,
     output wire led_blue,
-    output wire spi_ssn, spi_sck, spi_mosi,
-    input wire spi_miso
+    output wire spi_ssn, spi_sck, spi_mosi, uart_tx,
+    input wire spi_miso, uart_rx
 );
 
     // 48 MHz internal osc / 4 = 12 MHz
@@ -23,7 +23,9 @@ module SoftcoreTest (
         .spi_ssn(spi_ssn),
         .spi_sck(spi_sck),
         .spi_mosi(spi_mosi),
-        .spi_miso(spi_miso)
+        .spi_miso(spi_miso),
+        .uart_rx(uart_rx),
+        .uart_tx(uart_tx)
     );
 
     // LED pins are current sinks (driven through this block). leds[i] = 1 is ON

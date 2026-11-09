@@ -4,9 +4,8 @@
 // 0x2000_0000 - 0x203F_FFFF  SPI flash, 4 MB
 // 0x3000_0000 - 0x3000_FFFF  I/O, 4 KB slots
 module softcore_soc (
-    input wire clk, spi_miso,
-    output wire spi_sck, spi_ssn, spi_mosi,
-    output wire uart_tx, uart_rx,
+    input wire clk, spi_miso, uart_rx,
+    output wire spi_sck, spi_ssn, spi_mosi, uart_tx,
     output reg [2:0] leds = 3'b000
 );
     // Hold CPU in reset for 255 cycles after power-up
@@ -34,6 +33,15 @@ module softcore_soc (
     assign mem_rdata = (mem_addr[31:28] == 4'h1) ? spram_rdata : (mem_addr[31:28] == 4'h2) ? flash_rdata: bus_rdata;
 
     assign flash_valid = (mem_addr[31:28] == 4'h2 && mem_valid);
+
+    //UART i/o
+    logic [3:0] reg_div_we;
+    logic [31:0] reg_div_do, reg_dat_do;
+    logic reg_dat_we, reg_dat_re, reg_dat_wait;
+
+    assign reg_div_we = (mem_valid && mem_addr == 32'h3000_1000) ? mem_wstrb : 4'h0;
+    assign reg_dat_we = (mem_valid && mem_addr == 32'h3000_1100 && mem_wstrb[0]);
+    assign reg_dat_re = (mem_valid && mem_addr == 32'h3000_1100 && !mem_wstrb);
 
     SB_SPRAM256KA spram0_lo (
         .ADDRESS(mem_addr[15:2]),
@@ -100,16 +108,7 @@ module softcore_soc (
         .cfgreg_we(4'b0), .cfgreg_di(32'h0), .cfgreg_do()
     );
 
-
-    logic [3:0] reg_div_we;
-    logic [31:0] reg_div_do, reg_dat_do;
-    logic reg_dat_we, reg_dat_re, reg_dat_wait;
-
-    assign reg_div_we = (mem_valid && mem_addr == 32'h3000_1000) ? mem_wstrb : 4'h0;
-    assign reg_dat_we = (mem_valid && mem_addr == 32'h3000_1100 && mem_wstrb[0]);
-    assign reg_dat_re = (mem_valid && mem_addr == 32'h3000_1100 && !mem_wstrb);
-
-    simpleuart #(1250) uart (
+    simpleuart #(1) uart (
         .clk(clk), .resetn(resetn),
 
         .ser_tx(uart_tx), .ser_rx(uart_rx),
@@ -184,12 +183,9 @@ module softcore_soc (
                         4'h1: begin
                             case(mem_addr[11:8])
                                 //read from divider register
-                                //write is handled by assignment of mem_wdata on module and reg_dat_we!!!
                                 4'h0: bus_rdata <= reg_div_do;
-
                                 //read from data register
                                 4'h1: bus_rdata <= reg_dat_do;
-
                                 default: bus_rdata <= 32'h0000_0000;
                             endcase
                         end

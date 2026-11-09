@@ -28,7 +28,7 @@ module softcore_soc_tb;
         .spi_sck(sck),
         .spi_mosi(mosi),
         .spi_miso(miso),
-        .uart_rx(uart_rx),
+        .uart_rx(1'b1),
         .uart_tx(uart_tx)
         );
 
