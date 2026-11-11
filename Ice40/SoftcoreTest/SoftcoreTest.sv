@@ -1,0 +1,43 @@
+// Board wrapper. Only place for SB_ primitives (w/ no sim model) so softcore_soc can be simulated.
+module SoftcoreTest (
+    output wire led_red,
+    output wire led_green,
+    output wire led_blue,
+    output wire spi_ssn, spi_sck, spi_mosi, uart_tx,
+    input wire spi_miso, uart_rx
+);
+
+    // 48 MHz internal osc / 4 = 12 MHz
+    wire clk;
+    wire [2:0] leds;
+
+    /* verilator lint_off PINMISSING */
+    SB_HFOSC #(.CLKHF_DIV("0b10")) osc (
+        .CLKHFPU(1'b1), .CLKHFEN(1'b1), .CLKHF(clk)
+    );
+    /* verilator lint_on PINMISSING */
+
+    softcore_soc soc_inst (
+        .clk(clk), 
+        .leds(leds),
+        .spi_ssn(spi_ssn),
+        .spi_sck(spi_sck),
+        .spi_mosi(spi_mosi),
+        .spi_miso(spi_miso),
+        .uart_rx(uart_rx),
+        .uart_tx(uart_tx)
+    );
+
+    // LED pins are current sinks (driven through this block). leds[i] = 1 is ON
+    SB_RGBA_DRV #(
+        .CURRENT_MODE("0b1"),
+        .RGB0_CURRENT("0b000001"),
+        .RGB1_CURRENT("0b000001"),
+        .RGB2_CURRENT("0b000001")
+    ) rgb (
+        .CURREN(1'b1), .RGBLEDEN(1'b1),
+        .RGB0PWM(leds[0]), .RGB1PWM(leds[1]), .RGB2PWM(leds[2]),
+        .RGB0(led_green), .RGB1(led_blue), .RGB2(led_red)
+    );
+
+endmodule
