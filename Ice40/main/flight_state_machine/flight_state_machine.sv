@@ -40,22 +40,23 @@ always_ff @(posedge clk or posedge reset) begin
 
 end
 
-//timing
 
-localparam int SAMPLE_CYCLES = CLK_HZ / 20;  // velocity sample every 50 ms
+
 
 // thresholds
+
+localparam int PA_PER_FT  = 3;
 localparam int ONE_G = 2048;  //  (±16 g range)
-localparam int LAUNCH_ACC= 2 * ONE_G;  // > 2 G   
-localparam int BURNOUT_ACC = 0;   // < 0< G
-localparam int PA_PER_FT  = 3;   
-localparam int LAUNCH_ALT_P = 50 * PA_PER_FT * 64;  // > 50 ft above pad 
-localparam int VEL_TOL = 1 * PA_PER_FT * 64;   
+localparam logic signed [15:0] LAUNCH_ACC= 16'(2 * ONE_G);  // > 2 G   
+localparam logic signed [15:0] BURNOUT_ACC = 16'(0);   // < 0< G  
+localparam logic signed [24:0] LAUNCH_ALT_P = 25'(50 * PA_PER_FT * 64);  // > 50 ft above pad 
+localparam logic signed [24:0] VEL_TOL = 25'(1 * PA_PER_FT * 64);   
+ 
+localparam logic  [26:0] HOLD_CYCLES  = 27'(CLK_HZ / 5); // 0.2 s
+localparam logic  [26:0] LAND_CYCLES  = 27'(CLK_HZ * 5);    
 
-localparam int HOLD_CYCLES  = CLK_HZ / 5; // 0.2 s
-localparam int LAND_CYCLES  = CLK_HZ * 5;    
+localparam  [19:0] SAMPLE_CYCLES = 20'(CLK_HZ / 20);  // velocity sample every 50 ms
 
-// sample_tick pulses for 1 clock every 50 ms
 logic [19:0] sample_count;
 logic sample_tick;
 
@@ -69,7 +70,7 @@ always_ff @(posedge clk or posedge reset) begin
 end
 
 
-assign sample_tick = (sample_count == SAMPLE_CYCLES-1);
+assign sample_tick = (sample_count == SAMPLE_CYCLES- 20'd1);
 
 // pad pressure tracks while in idle and freezes once launched
 logic [23:0] pad_pressure;
