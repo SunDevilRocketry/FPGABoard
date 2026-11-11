@@ -8,6 +8,7 @@ endif
 CC      = $(CROSS)gcc
 OBJCOPY = $(CROSS)objcopy
 CFLAGS  = -march=rv32ic -mabi=ilp32 -O1 -ffreestanding -nostdlib
+INCLUDES = -Ilib/UART
 
 all: firmware.hex ../flash_text.hex
 
@@ -23,8 +24,8 @@ firmware.hex: firmware.bin
 	xxd -e -g 4 -c 4 firmware.bin | awk '{print $$2}' > firmware.hex
 
 # App (Runs from SPRAM, loaded into the fake flash @ the 1 MB offset)
-app/app.elf: app/start.S app/main.c app/app.ld
-	$(CC) $(CFLAGS) -T app/app.ld app/start.S app/main.c -o app/app.elf
+app/app.elf: app/start.S app/main.c app/app.ld lib/UART/UART.c
+	$(CC) $(CFLAGS) $(INCLUDES) -T app/app.ld app/start.S app/main.c lib/UART/UART.c -o app/app.elf
 
 app/app.bin: app/app.elf
 	$(OBJCOPY) -O binary app/app.elf app/app.bin

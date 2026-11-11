@@ -10,6 +10,7 @@ module softcore_soc_tb;
     wire sck;
     wire mosi;
     wire miso;
+    wire uart_rx, uart_tx;
 
     spiflash flash (
         .csb(cs),
@@ -26,7 +27,9 @@ module softcore_soc_tb;
         .spi_ssn(cs),
         .spi_sck(sck),
         .spi_mosi(mosi),
-        .spi_miso(miso)
+        .spi_miso(miso),
+        .uart_rx(1'b1),
+        .uart_tx(uart_tx)
         );
 
     always #5 clk = ~clk; // 100 MHz, not 12.
