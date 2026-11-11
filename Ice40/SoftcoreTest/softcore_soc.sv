@@ -1,0 +1,211 @@
+// PicoRV32 SoC. Memory map (region = mem_addr[31:28]):
+// 0x0000_0000 - 0x0000_03FF  EBR, 1 KB (CPU starts here)
+// 0x1000_0000 - 0x1001_FFFF  SPRAM, 128 KB
+// 0x2000_0000 - 0x203F_FFFF  SPI flash, 4 MB
+// 0x3000_0000 - 0x3000_FFFF  I/O, 4 KB slots
+module softcore_soc (
+    input wire clk, spi_miso, uart_rx,
+    output wire spi_sck, spi_ssn, spi_mosi, uart_tx,
+    output reg [2:0] leds = 3'b000
+);
+    // Hold CPU in reset for 255 cycles after power-up
+    reg [7:0] rst_cnt = 0;
+    wire resetn = &rst_cnt;
+    always @(posedge clk) begin
+        if (!resetn)
+            rst_cnt <= rst_cnt + 1;
+    end
+
+    // One bus for both instruction fetches and data. Chosen: RV32IC 
+    wire        mem_ready, mem_valid, mem_instr, trap, spram_sel, spram_sel0, spram_sel1;
+    wire        flash_valid, flash_ready;
+    wire [3:0]  mem_wstrb;
+    wire [31:0] mem_addr, mem_wdata, mem_rdata, spram_rdata, spram0_rdata, spram1_rdata;
+    wire [31:0] flash_rdata;
+    reg         bus_ready;
+    reg  [31:0] bus_rdata;
+
+    assign spram_rdata = (mem_addr[16] == 1'b1) ? spram1_rdata : spram0_rdata;
+    assign spram_sel = (mem_valid && !mem_ready && mem_addr[31:28] == 4'h1);
+    assign spram_sel0 = (spram_sel && mem_addr[16] == 1'b0);
+    assign spram_sel1 = (spram_sel && mem_addr[16] == 1'b1);
+
+    assign mem_rdata = (mem_addr[31:28] == 4'h1) ? spram_rdata : (mem_addr[31:28] == 4'h2) ? flash_rdata: bus_rdata;
+
+    assign flash_valid = (mem_addr[31:28] == 4'h2 && mem_valid);
+
+    //UART i/o
+    logic [3:0] reg_div_we;
+    logic [31:0] reg_div_do, reg_dat_do;
+    logic reg_dat_we, reg_dat_re, reg_dat_wait;
+
+    assign reg_div_we = (mem_valid && mem_addr == 32'h3000_1000) ? mem_wstrb : 4'h0;
+    assign reg_dat_we = (mem_valid && mem_addr == 32'h3000_1100 && mem_wstrb[0]);
+    assign reg_dat_re = (mem_valid && mem_addr == 32'h3000_1100 && !mem_wstrb);
+
+    SB_SPRAM256KA spram0_lo (
+        .ADDRESS(mem_addr[15:2]),
+        .DATAIN(mem_wdata[15:0]),
+        .MASKWREN({mem_wstrb[1], mem_wstrb[1], mem_wstrb[0], mem_wstrb[0]}),
+        .WREN(|mem_wstrb),
+        .CHIPSELECT(spram_sel0),
+        .CLOCK(clk),
+        .STANDBY(1'b0),
+        .SLEEP(1'b0),
+        .POWEROFF(1'b1),
+        .DATAOUT(spram0_rdata[15:0])
+    );
+
+    SB_SPRAM256KA spram0_hi (
+        .ADDRESS(mem_addr[15:2]),
+        .DATAIN(mem_wdata[31:16]),
+        .MASKWREN({mem_wstrb[3], mem_wstrb[3], mem_wstrb[2], mem_wstrb[2]}),
+        .WREN(|mem_wstrb),
+        .CHIPSELECT(spram_sel0),
+        .CLOCK(clk),
+        .STANDBY(1'b0),
+        .SLEEP(1'b0),
+        .POWEROFF(1'b1),
+        .DATAOUT(spram0_rdata[31:16])
+    );
+
+    SB_SPRAM256KA spram1_lo (
+        .ADDRESS(mem_addr[15:2]),
+        .DATAIN(mem_wdata[15:0]),
+        .MASKWREN({mem_wstrb[1], mem_wstrb[1], mem_wstrb[0], mem_wstrb[0]}),
+        .WREN(|mem_wstrb),
+        .CHIPSELECT(spram_sel1),
+        .CLOCK(clk),
+        .STANDBY(1'b0),
+        .SLEEP(1'b0),
+        .POWEROFF(1'b1),
+        .DATAOUT(spram1_rdata[15:0])
+    );
+
+    SB_SPRAM256KA spram1_hi (
+        .ADDRESS(mem_addr[15:2]),
+        .DATAIN(mem_wdata[31:16]),
+        .MASKWREN({mem_wstrb[3], mem_wstrb[3], mem_wstrb[2], mem_wstrb[2]}),
+        .WREN(|mem_wstrb),
+        .CHIPSELECT(spram_sel1),
+        .CLOCK(clk),
+        .STANDBY(1'b0),
+        .SLEEP(1'b0),
+        .POWEROFF(1'b1),
+        .DATAOUT(spram1_rdata[31:16])
+    );
+
+    spimemio flash(
+        .clk(clk), .resetn(resetn),
+        .valid(flash_valid), .ready(flash_ready), .rdata(flash_rdata),
+        .addr(mem_addr[23:0]), // 24-bit flash address (4MB repeats window [aliasing])
+        .flash_csb(spi_ssn), .flash_clk(spi_sck),
+        .flash_io0_do(spi_mosi),
+        .flash_io1_di(spi_miso),
+        .flash_io0_di(1'b0), .flash_io2_di(1'b0), .flash_io3_di(1'b0), 
+        .flash_io0_oe(), .flash_io1_oe(), .flash_io2_oe(), .flash_io3_oe(),
+        .flash_io1_do(), .flash_io2_do(), .flash_io3_do(),
+        .cfgreg_we(4'b0), .cfgreg_di(32'h0), .cfgreg_do()
+    );
+
+    simpleuart #(1) uart (
+        .clk(clk), .resetn(resetn),
+
+        .ser_tx(uart_tx), .ser_rx(uart_rx),
+
+        .reg_div_we(reg_div_we), .reg_div_di(mem_wdata), .reg_div_do(reg_div_do),
+
+        .reg_dat_we(reg_dat_we), .reg_dat_re(reg_dat_re), .reg_dat_di(mem_wdata), .reg_dat_do(reg_dat_do), .reg_dat_wait(reg_dat_wait)
+    );
+
+    picorv32 #(
+        .ENABLE_COUNTERS        (0),
+        .ENABLE_COUNTERS64      (0),
+        .ENABLE_REGS_16_31      (1),   // Set 0 for RV32E (would mean C compiles w/ '-mabi=ilp32e')
+        .ENABLE_REGS_DUALPORT   (1),
+        .BARREL_SHIFTER         (0),
+        .TWO_STAGE_SHIFT        (1),
+        .TWO_CYCLE_COMPARE      (0),
+        .TWO_CYCLE_ALU          (0),
+        .CATCH_MISALIGN         (1),
+        .CATCH_ILLINSN          (1),
+        .COMPRESSED_ISA         (1),
+        .ENABLE_MUL             (0),
+        .ENABLE_DIV             (0),
+        .ENABLE_IRQ             (0),
+        .ENABLE_PCPI            (0),
+        .ENABLE_TRACE           (0),
+        .LATCHED_MEM_RDATA      (0),
+        .PROGADDR_RESET         (32'h0000_0000)
+    ) cpu (
+        .clk(clk), .resetn(resetn),
+        .mem_valid(mem_valid), .mem_instr(mem_instr), .trap(trap),
+        .mem_ready(mem_ready),
+        .mem_addr(mem_addr), .mem_wdata(mem_wdata),
+        .mem_wstrb(mem_wstrb), .mem_rdata(mem_rdata),
+        .mem_la_read(), .mem_la_write(), .mem_la_addr(), .mem_la_wdata(), .mem_la_wstrb(),
+        .pcpi_valid(), .pcpi_insn(), .pcpi_rs1(), .pcpi_rs2(),
+        .pcpi_wr(1'b0), .pcpi_wait(1'b0), .pcpi_ready(1'b0),
+        .pcpi_rd(32'h0000_0000),
+        .irq(32'h0000_0000),
+        .eoi(),
+        .trace_valid(), .trace_data()
+    );
+
+    // EBR, preloaded with Firmware/firmware.hex
+    reg [31:0] mem [0:255];
+    initial begin
+        $readmemh("Firmware/firmware.hex", mem);
+    end
+
+    // Address Decode (Top 4 bits pick the region). One clock for EBR/SPRAM/I/O, but flash answers via flash_ready
+    always @(posedge clk) begin
+        bus_ready <= 0;
+        if (mem_valid && !bus_ready && mem_addr[31:28] != 4'h2 && !reg_dat_wait) begin
+            bus_ready <= 1;
+            case(mem_addr[31:28])
+                4'h0: begin
+                    // EBR. Only bits 9:2 used, so the 1 KB repeats through the region
+                    bus_rdata <= mem[mem_addr[9:2]];
+                    if (mem_wstrb[0]) mem[mem_addr[9:2]][ 7: 0] <= mem_wdata[ 7: 0];    // one strobe per byte
+                    if (mem_wstrb[1]) mem[mem_addr[9:2]][15: 8] <= mem_wdata[15: 8]; 
+                    if (mem_wstrb[2]) mem[mem_addr[9:2]][23:16] <= mem_wdata[23:16];  
+                    if (mem_wstrb[3]) mem[mem_addr[9:2]][31:24] <= mem_wdata[31:24];
+                end
+
+                4'h3: begin
+                    // I/O. LEDs take bits 22:20 so changes are slow (to be seen).
+                    case(mem_addr[15:12])
+                        4'h0: begin      // (slot 0: LEDs, write only)
+                            if (|mem_wstrb) leds <= mem_wdata[22:20];
+                            bus_rdata <= 32'h0000_0000;
+                        end
+                        4'h1: begin
+                            case(mem_addr[11:8])
+                                //read from divider register
+                                4'h0: bus_rdata <= reg_div_do;
+                                //read from data register
+                                4'h1: bus_rdata <= reg_dat_do;
+                                default: bus_rdata <= 32'h0000_0000;
+                            endcase
+                        end
+                        default: bus_rdata <= 32'h0000_0000;    // (slot 1-15: Unwritten)
+                    endcase
+                    
+                end
+
+                default: begin
+                    // 4-F Unmapped (prevent CPU hang)
+                    // SPRAM & flash thro' muxes.
+                    bus_rdata <= 32'h0000_0000;
+                end
+            endcase
+        end
+        if (!resetn) bus_ready <= 1'b0;
+    end
+
+    assign mem_ready = (mem_addr[31:28] == 4'h2) ? flash_ready : bus_ready;
+
+
+
+endmodule
