@@ -16,7 +16,9 @@
  *  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  */
-
+/* verilator lint_off WIDTH */
+/* verilator lint_off CASEOVERLAP */
+/* verilator lint_off CASEINCOMPLETE */
 module spimemio (
 	input clk, resetn,
 
@@ -577,3 +579,6 @@ module spimemio_xfer (
 		end
 	end
 endmodule
+/* verilator lint_on WIDTH */
+/* verilator lint_on CASEOVERLAP */
+/* verilator lint_on CASEINCOMPLETE */

@@ -11,11 +11,12 @@ set_io -nowarn serial_txd 14 # FPGA transmit to USB
 set_io -nowarn serial_rxd 15 # FPGA receive from USB
 set_io -nowarn spi_cs 16 # Connected to SPI flash, drive high unless using SPI flash!
 
-# If using the FTDI MPSSE engine, the following signals apply
-set_io -nowarn spi_sck 15  # Shared with the flash
-set_io -nowarn spi_ssn 16  # Connected to SPI flash, drive high unless using SPI flash!
-set_io -nowarn spi_mosi 17 # Shared with the flash
-set_io -nowarn spi_miso 14 # Shared with the flash
+set_io -nowarn spi_sck 15  
+set_io -nowarn spi_ssn 16 
+
+# FPGA Master Setup
+set_io -nowarn spi_mosi 14 
+set_io -nowarn spi_miso 17 
 
 # Normal GPIO pins, left side
 set_io -nowarn gpio_23 23
