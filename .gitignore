@@ -5,3 +5,5 @@ _build/
 *.bin
 *.elf
 *.vcd
+.DS_Store
+.vscode/

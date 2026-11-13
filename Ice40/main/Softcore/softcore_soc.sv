@@ -152,10 +152,10 @@ module softcore_soc (
         .trace_valid(), .trace_data()
     );
 
-    // EBR, preloaded with Firmware/firmware.hex
+    // EBR, preloaded with Firmware/firmware.hex (path is relative to the apio project root)
     reg [31:0] mem [0:255];
     initial begin
-        $readmemh("Firmware/firmware.hex", mem);
+        $readmemh("Softcore/Firmware/firmware.hex", mem);
     end
 
     // Address Decode (Top 4 bits pick the region). One clock for EBR/SPRAM/I/O, but flash answers via flash_ready
