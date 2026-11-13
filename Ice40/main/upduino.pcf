@@ -15,8 +15,12 @@ set_io -nowarn spi_sck 15
 set_io -nowarn spi_ssn 16 
 
 # FPGA Master Setup
-set_io -nowarn spi_mosi 14 
-set_io -nowarn spi_miso 17 
+set_io -nowarn spi_mosi 14
+set_io -nowarn spi_miso 17
+
+# UART to an external 3.3V USB-serial adapter (header 11/12, GND at header 10)
+set_io -nowarn uart_tx 23  # to adapter RX
+set_io -nowarn uart_rx 25  # from adapter TX
 
 # Normal GPIO pins, left side
 set_io -nowarn gpio_23 23
