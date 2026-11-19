@@ -118,6 +118,13 @@ module softcore_soc (
         .reg_dat_we(reg_dat_we), .reg_dat_re(reg_dat_re), .reg_dat_di(mem_wdata), .reg_dat_do(reg_dat_do), .reg_dat_wait(reg_dat_wait)
     );
 
+    logic [63:0] count;
+    counter #(64) counter(
+        .clk(clk), .enable(1'b1), .reset(resetn),
+
+        .count(count)
+    );
+
     picorv32 #(
         .ENABLE_COUNTERS        (0),
         .ENABLE_COUNTERS64      (0),
@@ -187,6 +194,13 @@ module softcore_soc (
                                 //read from data register
                                 4'h1: bus_rdata <= reg_dat_do;
                                 default: bus_rdata <= 32'h0000_0000;
+                            endcase
+                        end
+                        4'h2: begin
+                            case(mem_addr[11:8])
+                                4'h0: bus_rdata <= count[31:0];
+                                4'h1: bus_rdata <= count[63:32];
+                                default: bus_rdata = 32'h0000_0000;
                             endcase
                         end
                         default: bus_rdata <= 32'h0000_0000;    // (slot 1-15: Unwritten)
