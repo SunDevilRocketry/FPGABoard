@@ -41,7 +41,7 @@ module softcore_soc (
 
     assign reg_div_we = (mem_valid && mem_addr == 32'h3000_1000) ? mem_wstrb : 4'h0;
     assign reg_dat_we = (mem_valid && mem_addr == 32'h3000_1100 && mem_wstrb[0]);
-    assign reg_dat_re = (mem_valid && mem_addr == 32'h3000_1100 && !mem_wstrb);
+    assign reg_dat_re = (mem_valid && mem_addr == 32'h3000_1100 && ~|mem_wstrb);
 
     SB_SPRAM256KA spram0_lo (
         .ADDRESS(mem_addr[15:2]),
