@@ -119,8 +119,9 @@ module softcore_soc (
     );
 
     logic [63:0] count;
+    logic count_enable, count_reset;
     counter #(64) counter(
-        .clk(clk), .enable(1'b1), .reset(resetn),
+        .clk(clk), .enable(count_enable), .reset(resetn|count_reset),
 
         .count(count)
     );
@@ -198,9 +199,19 @@ module softcore_soc (
                         end
                         4'h2: begin
                             case(mem_addr[11:8])
-                                4'h0: bus_rdata <= count[31:0];
-                                4'h1: bus_rdata <= count[63:32];
-                                default: bus_rdata = 32'h0000_0000;
+                                4'h0: begin
+                                    if (mem_wstrb[0]) 
+                                        count_enable <= mem_wdata[0];
+                                    bus_rdata <= {31'b0, count_enable};
+                                end
+                                4'h1: begin
+                                    if (mem_wstrb[0]) 
+                                        count_reset <= mem_wdata[0];
+                                    bus_rdata<= {31'b0, count_reset};
+                                end
+                                4'h2: bus_rdata <= count[31:0];
+                                4'h3: bus_rdata <= count[63:32];
+                                default: bus_rdata <= 32'h0000_0000;
                             endcase
                         end
                         default: bus_rdata <= 32'h0000_0000;    // (slot 1-15: Unwritten)

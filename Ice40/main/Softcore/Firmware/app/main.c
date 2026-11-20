@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include "UART.h"
+#include "TIMER.h"
 
 int main(void){
     volatile uint32_t *leds = (volatile uint32_t *)0x30000000;
