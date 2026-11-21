@@ -1,7 +1,6 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-#include <cstdint>
 #include <stdint.h>
 
 static volatile uint32_t *const timer_enable = (volatile uint32_t *)0x30002000;
