@@ -5,6 +5,7 @@
 
 static volatile uint32_t *const uart_div = (volatile uint32_t *)0x30001000;
 static volatile uint32_t *const uart_buf = (volatile uint32_t *)0x30001100;
+static volatile uint32_t *const uart_ctl = (volatile uint32_t *)0x30001200;  // bit 0: UART takes flash pins 14/15
 
 void UART_putchar(char c);
 

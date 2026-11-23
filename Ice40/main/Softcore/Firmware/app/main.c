@@ -8,9 +8,10 @@ int main(void){
     volatile const uint32_t *flash = (volatile const uint32_t *)0x20100000;
 
     uint32_t n = 0x01234000;
-    UART_setBaudScale(10);
+    UART_setBaudScale(1250);    // 12 MHz / 1250 = 9600 baud
     UART_getBaudScale();
-    *leds = *flash;
+    *leds = *flash;             // last flash read (pin can switch to UART now) 
+    *uart_ctl = 1;
     UART_print("APP is APPING\n");
 
     while (1) {
@@ -19,6 +20,6 @@ int main(void){
         *ram1 = ~n;
         *leds = *ram0;
         if ((n & 0xFFFFF) == 0)
-            UART_print("h");
+            UART_print("This is UARTing so hard right now\n");
     }
 }
