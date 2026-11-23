@@ -11,16 +11,12 @@ set_io -nowarn serial_txd 14 # FPGA transmit to USB
 set_io -nowarn serial_rxd 15 # FPGA receive from USB
 set_io -nowarn spi_cs 16 # Connected to SPI flash, drive high unless using SPI flash!
 
-set_io -nowarn spi_sck 15  
+set_io -nowarn spi_sck 15  # also FT232H TXD -> UART RX once the app sets uart_mode (#43)
 set_io -nowarn spi_ssn 16 
 
 # FPGA Master Setup
-set_io -nowarn spi_mosi 14
+set_io -nowarn spi_mosi 14  # also FT232H RXD <- UART TX once the app sets uart_mode (#43)
 set_io -nowarn spi_miso 17
-
-# UART to an external 3.3V USB-serial adapter (header 11/12, GND at header 10)
-set_io -nowarn uart_tx 23  # to adapter RX
-set_io -nowarn uart_rx 25  # from adapter TX
 
 # Normal GPIO pins, left side
 set_io -nowarn gpio_23 23

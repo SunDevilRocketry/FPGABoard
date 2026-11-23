@@ -3,13 +3,15 @@ module top (
     output wire led_red,
     output wire led_green,
     output wire led_blue,
-    output wire spi_ssn, spi_sck, spi_mosi, uart_tx,
-    input wire spi_miso, uart_rx
+    output wire spi_ssn, spi_mosi,  // pin 14 is also FT232H RXD (UART TX), muxed in softcore_soc
+    inout  wire spi_sck,            // pin 15: flash SCK out, then FT232H TXD in (UART RX)
+    input  wire spi_miso
 );
 
     // 48 MHz internal osc / 4 = 12 MHz
     wire clk;
     wire [2:0] leds;
+    wire sck_out, uart_rx, uart_mode;
 
     /* verilator lint_off PINMISSING */
     SB_HFOSC #(.CLKHF_DIV("0b10")) osc (
@@ -21,12 +23,26 @@ module top (
         .clk(clk), 
         .leds(leds),
         .spi_ssn(spi_ssn),
-        .spi_sck(spi_sck),
+        .spi_sck(sck_out),
         .spi_mosi(spi_mosi),
         .spi_miso(spi_miso),
         .uart_rx(uart_rx),
-        .uart_tx(uart_tx)
+        .uart_tx(),
+        .uart_mode(uart_mode)
     );
+
+    // Pin 15 changes direction: driven as flash SCK during boot, released (pulled up) for UART RX after
+    /* verilator lint_off PINMISSING */
+    SB_IO #(
+        .PIN_TYPE(6'b1010_01),  // output with enable, plain input
+        .PULLUP(1'b1)
+    ) sck_io (
+        .PACKAGE_PIN(spi_sck),
+        .OUTPUT_ENABLE(!uart_mode),
+        .D_OUT_0(sck_out),
+        .D_IN_0(uart_rx)
+    );
+    /* verilator lint_on PINMISSING */
 
     // LED pins are current sinks (driven through this block). leds[i] = 1 is ON
     SB_RGBA_DRV #(

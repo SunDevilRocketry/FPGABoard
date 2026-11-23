@@ -6,6 +6,7 @@
 module softcore_soc (
     input wire clk, spi_miso, uart_rx,
     output wire spi_sck, spi_ssn, spi_mosi, uart_tx,
+    output reg  uart_mode = 1'b0,   // 0: pins 14/15 are flash MOSI/SCK. 1: UART TX/RX (top.sv releases pin 15)
     output reg [2:0] leds = 3'b000
 );
     // Hold CPU in reset for 255 cycles after power-up
@@ -38,6 +39,11 @@ module softcore_soc (
     logic [3:0] reg_div_we;
     logic [31:0] reg_div_do, reg_dat_do;
     logic reg_dat_we, reg_dat_re, reg_dat_wait;
+    wire flash_csb, flash_mosi;
+
+    // Pin sharing with the FT232H (#43). Flash stays deselected in UART mode so it ignores pins 14/15.
+    assign spi_ssn  = flash_csb | uart_mode;
+    assign spi_mosi = uart_mode ? uart_tx : flash_mosi;
 
     assign reg_div_we = (mem_valid && mem_addr == 32'h3000_1000) ? mem_wstrb : 4'h0;
     assign reg_dat_we = (mem_valid && mem_addr == 32'h3000_1100 && mem_wstrb[0]);
@@ -99,8 +105,8 @@ module softcore_soc (
         .clk(clk), .resetn(resetn),
         .valid(flash_valid), .ready(flash_ready), .rdata(flash_rdata),
         .addr(mem_addr[23:0]), // 24-bit flash address (4MB repeats window [aliasing])
-        .flash_csb(spi_ssn), .flash_clk(spi_sck),
-        .flash_io0_do(spi_mosi),
+        .flash_csb(flash_csb), .flash_clk(spi_sck),
+        .flash_io0_do(flash_mosi),
         .flash_io1_di(spi_miso),
         .flash_io0_di(1'b0), .flash_io2_di(1'b0), .flash_io3_di(1'b0), 
         .flash_io0_oe(), .flash_io1_oe(), .flash_io2_oe(), .flash_io3_oe(),
@@ -110,11 +116,8 @@ module softcore_soc (
 
     simpleuart #(1) uart (
         .clk(clk), .resetn(resetn),
-
-        .ser_tx(uart_tx), .ser_rx(uart_rx),
-
+        .ser_tx(uart_tx), .ser_rx(uart_mode ? uart_rx : 1'b1),   // idle high until pin 15 is ours
         .reg_div_we(reg_div_we), .reg_div_di(mem_wdata), .reg_div_do(reg_div_do),
-
         .reg_dat_we(reg_dat_we), .reg_dat_re(reg_dat_re), .reg_dat_di(mem_wdata), .reg_dat_do(reg_dat_do), .reg_dat_wait(reg_dat_wait)
     );
 
@@ -186,6 +189,11 @@ module softcore_soc (
                                 4'h0: bus_rdata <= reg_div_do;
                                 //read from data register
                                 4'h1: bus_rdata <= reg_dat_do;
+                                // 0x3000_1200 bit 0: hand pins 14/15 to the UART.
+                                4'h2: begin
+                                    if (mem_wstrb[0] && mem_wdata[0]) uart_mode <= 1'b1;
+                                    bus_rdata <= {31'h0, uart_mode};
+                                end
                                 default: bus_rdata <= 32'h0000_0000;
                             endcase
                         end
